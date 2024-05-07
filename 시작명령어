@@ -1,0 +1,2 @@
+rails s -b 'ssl://0.0.0.0:3000?key=/home/ctop/privkey.pem&cert=/home/ctop/fullchain.pem'
+

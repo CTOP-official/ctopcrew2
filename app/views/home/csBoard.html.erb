@@ -1,0 +1,171 @@
+<div class="card mb-4 card-header-actions">
+    <div class="card-header">
+      <form>
+        <div class="row m-1">
+          <input type="text" class="col-8" placeholder="주문번호" id="orderIdInput" name="order_number" value="<%= @order_name %>">
+          <button type="submit" class="btn btn-primary col-3 ms-1">검색</button>
+        </div>
+      </form>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <!-- Billing card 1-->
+          <div class="card h-100 border-start-lg border-start-primary">
+            <div class="card-body">
+              <div class="small text-muted">주문번호</div>
+              <div class="h3"><%= @data[0].to_s %></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <!-- Billing card 2-->
+          <div class="card h-100 border-start-lg border-start-primary">
+            <div class="card-body">
+              <div class="small text-muted">주문일시</div>
+              <div class="h3"><%= @data[1].to_s %></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 mb-4">
+          <!-- Billing card 3-->
+          <div class="card h-100 border-start-lg border-start-success">
+            <div class="card-body">
+              <div class="small text-muted">발송지연</div>
+              <div class="h3 d-flex align-items-center"><%= @data[14].to_s %></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 mb-4">
+          <!-- Billing card 3-->
+          
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <!-- Billing card 1-->
+          <div class="card h-100 border-start-lg border-start-success">
+            <div class="card-body">
+              <div class="small text-muted">주문자</div>
+              <div class="h3"><%= @data[2].to_s + ' ' + @data[3].to_s %></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <!-- Billing card 2-->
+          <div class="card h-100 border-start-lg border-start-success">
+            <div class="card-body">
+              <div class="small text-muted">수취인</div>
+              <div class="h3"><%= @data[4].to_s + ' ' + @data[5].to_s %></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 mb-4">
+          <!-- Billing card 3-->
+          <div class="card h-100 border-start-lg border-start-success">
+            <div class="card-body">
+              <div class="small text-muted">개통부</div>
+              <div class="h3 d-flex align-items-center"><%= @data[6].to_s %></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 mb-4">
+          <!-- Billing card 3-->
+          <div class="card h-100 border-start-lg border-start-success">
+            <div class="card-body">
+              <div class="small text-muted">개통부현황</div>
+              <div class="h3 d-flex align-items-center"><%= @data[7].to_s %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-8 mb-4">
+          <!-- Billing card 1-->
+          <div class="card h-100 border-start-lg border-start-secondary">
+            <div class="card-body">
+              <div class="small text-muted">노출상품명</div>
+              <div class="h3"><%= @data[8].to_s %></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 mb-4">
+          <!-- Billing card 2-->
+          <div class="card h-100 border-start-lg border-start-secondary">
+            <div class="card-body">
+              <div class="small text-muted">수량</div>
+              <div class="h3"><%= @data[9].to_s %></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 mb-4">
+          <!-- Billing card 3-->
+          <div class="card h-100 border-start-lg border-start-secondary">
+            <div class="card-body">
+              <div class="small text-muted">금액</div>
+              <div class="h3 d-flex align-items-center"><%= @data[10].to_s %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-8 mb-4">
+          <!-- Billing card 1-->
+          <div class="card h-100 border-start-lg border-start-info">
+            <div class="card-body">
+              <div class="small text-muted">배송주소</div>
+              <div class="h3"><%= @data[11].to_s %></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-2 mb-4">
+          <!-- Billing card 3-->
+          <div class="card h-100 border-start-lg border-start-info">
+            <div class="card-body">
+              <div class="small text-muted">운송장번호</div>
+              <div class="h3 d-flex align-items-center"><%= @data[12].to_s %></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 mb-4">
+          <!-- Billing card 3-->
+          <div class="card h-100 border-start-lg border-start-info">
+            <div class="card-body">
+              <div class="small text-muted">출고일</div>
+              <div class="h3 d-flex align-items-center"><%= @data[13].to_s %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="mb-3 col-6">
+          <label for="exampleFormControlInput1">문의기록</label>
+          <input class="form-control" id="content1" type="text" placeholder="">
+        </div>
+        <div class="mt-4 col-4">
+          <button class="btn btn-primary" id="saveButton">저장</button>
+        </div>
+      </div>
+
+      <% @content.each do |value| %>
+          <p><%= value[2..-1].join('  ') %></p>
+      <% end %>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $("#saveButton").click(function (){
+            $.ajax({
+                url: '/csContentUpload',
+                method: 'POST',
+                data: {'content' : $("#content1").val(), 'id' : $("#orderIdInput").val()},
+                success: function (res){
+                    location.reload()
+                }
+            });
+        });
+    })
+</script>

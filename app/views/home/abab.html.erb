@@ -1,0 +1,27 @@
+<script>
+    var dataTable;
+
+    window.addEventListener('DOMContentLoaded', event => {
+        const datatablesSimple = document.getElementById('datatablesSimple');
+        if (datatablesSimple) {
+            dataTable = new simpleDatatables.DataTable(datatablesSimple, {
+                perPageSelect : [["10", 10], ["50", 50], ["100", 100], ["500", 500], ["All", 0]],
+                perPage : 0,
+                scrollX : true,
+            });
+        }
+    });
+
+    $(document).ready(function () {
+        document.getElementById('fileInput').addEventListener('change', function (event) {
+            var selectedFile = event.target.files[0];
+            console.log('Selected File:', selectedFile);
+
+            dataTable.destroy();
+
+            const tbody = document.querySelector("#datatablesSimple tbody");
+            tbody.innerHTML = '';
+            dataTable.init();
+        });
+    });
+</script>

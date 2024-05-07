@@ -1,0 +1,450 @@
+<style>
+    th:first-child, td:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 1; /* 다른 요소 위에 표시하기 위해 z-index 설정 */
+        background-color: #ffffff; /* 첫 번째 열 배경색 */
+    }
+
+    thead { position: sticky; top: 0; z-index: 2; }
+</style>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h1>주문현황</h1>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-1 m-2 ms-2"></div>
+            <button type="button" class="btn btn-success col m-2" id="edit_btn333">전체다운로드(기존양식)</button>
+            <button type="button" class="btn btn-success col m-2" id="edit_btn3">전체다운로드</button>
+            <button type="button" class="btn btn-success col m-2" id="edit_btn4">송장다운로드</button>
+            <input type="file" id="fileInput" style="display:none;">
+            <button type="button" class="btn btn-secondary col m-2" onclick="document.getElementById('fileInput').click()"  id="download_btn4">송장업로드</button>
+            <button type="button" class="btn btn-secondary col m-2" id="download_btn5">개통부문자다운로드</button>
+            <button type="button" class="btn btn-success col m-2" id="edit_btn2">개통부수정</button>
+        </div>
+        <div class="row">
+            <button class="btn btn-danger soonje_show col-1 m-2" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">삭제</button>
+
+            <select class="form-control col m-2" id="where_select2">
+                <option value="일반다운로드">일반다운로드</option>
+                <option value="강제다운로드">강제다운로드</option>
+            </select>
+
+            <select class="form-control col m-2" id="where_select3">
+                <option value="호주">호주</option>
+                <option value="한국">한국</option>
+                <option value="중국">중국</option>
+                <option value="카쿠">카쿠</option>
+            </select>
+
+            <select class="form-control col m-2" id="where_select">
+                <option value="ALL">ALL</option>
+                <option value="CNC">CNC</option>
+                <option value="CTOP">CTOP</option>
+                <option value="FC">FC</option>
+                <option value="UM">UM</option>
+                <option value="TP">TP</option>
+                <option value="VM">VM</option>
+                <option value="MDD">MDD</option>
+            </select>
+            <button type="button" class="btn btn-secondary col m-2" id="download_btn3">발주서다운로드</button>
+            <button type="button" class="btn btn-secondary col m-2" id="download_btn2">세관신고다운로드</button>
+            <button type="submit" class="btn btn-success col m-2" id="edit_btn">수정</button>
+        </div>
+        <form method="GET" action="/orderStatus">
+            <div class="row">
+                    <div class="col-1 m-2"></div>
+
+                    <select class="form-control col m-2" id="" name="date_option">
+                        <option value="작성일" <%= @select_default['작성일'].to_s %>>작성일</option>
+                        <option value="주문일" <%= @select_default['주문일'].to_s %>>주문일</option>
+                        <option value="발주일" <%= @select_default['발주일'].to_s %>>발주일</option>
+                        <option value="출고일" <%= @select_default['출고일'].to_s %>>출고일</option>
+                    </select>
+
+                    <div class="input-group input-group-joined col m-2">
+                        <span class="input-group-text">
+                            <i data-feather="calendar"></i>
+                        </span>
+                        <input class="form-control ps-0" id="litepickerRangePlugin" placeholder="Select date range..." name="date" value="<%= @time%>" />
+                    </div>
+
+                    <div class="input-group input-group-joined col m-2">
+                        <span class="input-group-text">
+                            <i data-feather="calendar"></i>
+                        </span>
+                        <input class="form-control ps-0" id="litepickerRangePlugin2" placeholder="Select date range..." name="date2" value="<%= @time2%>" />
+                    </div>
+
+                    <select class="form-control col m-2" id="exampleFormControlSelect1" name="option2">
+                        <% @select2.each do |i| %>
+                            <option value="<%= i %>" <%= @select_default2[i] %>><%= i %></option>
+                        <% end %>
+                    </select>
+
+                    <input class="form-control col m-2" id="exampleFormControlInput1" type="text" placeholder="" name="search_text" value="<%= @search_text %>">
+
+                <button type="submit" class="btn btn-primary col m-2" id="search1">검색</button>
+            </div>
+        </form>
+        <div style="width:100%; height:510px; overflow:auto;" id="table-container" class="m-2">
+            <table id="datatablesSimple" width="8000px;" style="overflow-y:scroll;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>ID</th>
+                        <th>작성일</th>
+                        <th>주문일</th>
+                        <th>발주일</th>
+                        <th>업체명</th>
+                        <th>마켓명</th>
+                        <th>출고일</th>
+                        <th>송장번호</th>
+                        <th>도매주문번호</th>
+                        <th>비잼번호</th>
+                        <th>소매주문번호</th>
+                        <th>상품코드</th>
+                        <th>바코드</th>
+                        <th>수량</th>
+                        <th>마켓주문수량</th>
+                        <th>주문자명</th>
+                        <th>주문자핸드폰번호</th>
+                        <th>수령자명</th>
+                        <th>수취인핸드폰번호</th>
+                        <th>개통부</th>
+                        <th>우편번호</th>
+                        <th>주소</th>
+                        <th>배송메세지</th>
+                        <th>회수여부</th>
+                        <th>입금계좌</th>
+                        <th>판매가</th>
+                        <th>배송비</th>
+                        <th>수수료</th>
+                        <th>정산금액</th>
+                        <th>정산확정일</th>
+                        <th>원가</th>
+                        <th>배송비2</th>
+                        <th>상품명</th>
+                        <th>통관번호현황</th>
+                        <th>다운로드1</th>
+                        <th>다운로드2</th>
+                        <th>비고1</th>
+                        <th>비고2</th>
+                        <th>비고3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @data.each do |value| %>
+                        <tr>
+                            <th>
+                                <input class="form-check-input soonje_check" id="flexCheckSolidDefault" type="checkbox" value="">
+                            </th>
+                            <% value.each_with_index do |v,index| %>
+                                <% if index == 0 %>
+                                    <td><%= v %></td>
+                                <% else %>
+                                    <td contenteditable="true"><%= v %></td>
+                                <% end %>
+                            <% end %>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="m-3">
+                <input type="hidden" id="where_row">
+                <h3>삭제하시겠습니까?</h3>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button><button class="btn btn-primary" type="button" data-bs-dismiss="modal" id="delete_btn">확인</button></div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function() {
+        const picker = new Litepicker({ 
+            element: document.getElementById('litepickerRangePlugin')
+        });
+
+        const picker2 = new Litepicker({ 
+            element: document.getElementById('litepickerRangePlugin2')
+        });
+
+        $(document).on("click", "#delete_btn", function(){
+            const selectedRows = [];
+            const checkboxes = document.querySelectorAll('.soonje_check');
+            checkboxes.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    const row = checkbox.closest('tr').innerHTML;
+                    selectedRows.push(row);
+                }
+            });
+
+            $.ajax({
+                url: '/delete_action',
+                method: 'POST',
+                data: {'data' : selectedRows},
+                success: function(res){
+                    location.reload();
+                }
+            });
+        });
+
+        $(document).on("click", "#download_btn2", function(){
+            var table33 = document.getElementById('datatablesSimple');
+            const totalRowCnt = table33.rows.length;
+            var selectedRows = [];
+            for(i=1;i<totalRowCnt;i++){
+                selectedRows.push(table33.rows[i].innerHTML);
+            }
+            if($("#where_select").val() == 'ALL'){
+                  $.ajax({
+                      url: '/download_action9',
+                      method: 'POST',
+                      data: {'data' : selectedRows, 'where' : $("#where_select").val()  , 'where2' : $("#where_select2").val(), 'where3' : $("#where_select3").val()},
+                      success: function(res){
+                          if(res['result'] == 'ok'){
+                              window.open(res['answer'], '_blank');
+                          }else{
+                              alert($("#where_select").val()+'실패');
+                          }
+                      }
+                  });
+            }else{
+                $.ajax({
+                    url: '/download_action8',
+                    method: 'POST',
+                    data: {'data' : selectedRows, 'where' :  $("#where_select").val(), 'where2' : $("#where_select2").val(), 'where3' : $("#where_select3").val()},
+                    success: function(res){
+                        if(res['result'] == 'ok'){
+                            window.open(res['answer'], '_blank');
+                        }else{
+                            alert($("#where_select").val()+'실패');
+                        }
+                    }
+                });
+            }
+        });
+
+        $(document).on("click", "#download_btn3", function(){
+            var table33 = document.getElementById('datatablesSimple');
+            const totalRowCnt = table33.rows.length;
+            var selectedRows = [];
+            for(i=1;i<totalRowCnt;i++){
+                selectedRows.push(table33.rows[i].innerHTML);
+            }
+
+            if($("#where_select").val() == "ALL"){
+                $.ajax({
+                    url: '/download_action_all',
+                    method: 'POST',
+                    data: {
+                        'data': selectedRows,
+                        'where2': $("#where_select2").val(),
+                        'where3': $("#where_select3").val()
+                    },
+                    success: function (res) {
+                        if (res['result'] == 'ok') {
+                            window.open(res['answer'], '_blank');
+                        } else {
+                            alert($("#where_select").val() + '실패');
+                        }
+                    }
+                })
+            }else {
+                $.ajax({
+                    url: '/download_action7',
+                    method: 'POST',
+                    data: {
+                        'data': selectedRows,
+                        'where': $("#where_select").val(),
+                        'where2': $("#where_select2").val(),
+                        'where3': $("where_select3").val()
+                    },
+                    success: function (res) {
+                        if (res['result'] == 'ok') {
+                            window.open(res['answer'], '_blank');
+                        } else {
+                            alert($("#where_select").val() + '실패');
+                        }
+                    }
+                });
+            }
+        });
+
+        $(document).on("click", "#download_btn5", function(){
+            var table33 = document.getElementById('datatablesSimple');
+            const totalRowCnt = table33.rows.length;
+            var selectedRows = [];
+            for(i=1;i<totalRowCnt;i++){
+                selectedRows.push(table33.rows[i].innerHTML);
+            }
+            $.ajax({
+                url: '/moonja_download',
+                method: 'POST',
+                data: {'data' : selectedRows, 'where' :  $("#where_select").val(), 'where2' : $("#where_select2").val(), 'where3' : $("where_select3").val()},
+                success: function(res){
+                    if(res['result'] == 'ok'){
+                        window.open(res['answer'], '_blank');
+                    }else{
+                        alert('문자다운로드실패');
+                    }
+                }
+            });
+        });
+
+        $(document).on("click", "#edit_btn3", function(){
+            var table33 = document.getElementById('datatablesSimple');
+            const totalRowCnt = table33.rows.length;
+            var selectedRows = [];
+            for(i=1;i<totalRowCnt;i++){
+                selectedRows.push(table33.rows[i].innerHTML);
+            }
+            $.ajax({
+                url: '/total_download',
+                method: 'POST',
+                data: {'data' : selectedRows},
+                success: function(res){
+                    if(res['result'] == 'ok'){
+                        window.open(res['answer'], '_blank');
+                    }else{
+                        alert('문자다운로드실패');
+                    }
+                }
+            });
+        });
+
+        $(document).on("click", "#edit_btn333", function(){
+            var table33 = document.getElementById('datatablesSimple');
+            const totalRowCnt = table33.rows.length;
+            var selectedRows = [];
+            for(i=1;i<totalRowCnt;i++){
+                selectedRows.push(table33.rows[i].innerHTML);
+            }
+            $.ajax({
+                url: '/total_download333',
+                method: 'POST',
+                data: {'data' : selectedRows},
+                success: function(res){
+                    if(res['result'] == 'ok'){
+                        window.open(res['answer'], '_blank');
+                    }else{
+                        alert('문자다운로드실패');
+                    }
+                }
+            });
+        });
+
+        $(document).on("click", "#edit_btn4", function(){
+            var table33 = document.getElementById('datatablesSimple');
+            const totalRowCnt = table33.rows.length;
+            var selectedRows = [];
+            for(i=1;i<totalRowCnt;i++){
+                selectedRows.push(table33.rows[i].innerHTML);
+            }
+            $.ajax({
+                url: '/total_download2',
+                method: 'POST',
+                data: {'data' : selectedRows},
+                success: function(res){
+                    if(res['result'] == 'ok'){
+                        window.open(res['answer'], '_blank');
+                    }else{
+                        alert('송장다운로드실패');
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', "#edit_btn", function(){
+            const selectedRows = [];
+            const checkboxes = document.querySelectorAll('.soonje_check');
+            checkboxes.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    const row = checkbox.closest('tr').innerHTML;
+                    selectedRows.push(row);
+                }
+            });
+
+            $.ajax({
+                url: '/edit_action',
+                method: 'POST',
+                data: {'data' : selectedRows},
+                success: function(res){
+                    location.reload();
+                }
+            });
+        });
+
+        $(document).on('click', "#edit_btn2", function(){
+            const selectedRows = [];
+            const checkboxes = document.querySelectorAll('.soonje_check');
+            checkboxes.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    const row = checkbox.closest('tr').innerHTML;
+                    selectedRows.push(row);
+                }
+            });
+
+            $.ajax({
+                url: '/edit_action2',
+                method: 'POST',
+                data: {'data' : selectedRows},
+                success: function(res){
+                    location.reload();
+                }
+            });
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function (event) {
+            var selectedFile = event.target.files[0];
+            if (selectedFile){
+                readExcel(selectedFile);
+            }
+        });
+
+        function readExcel(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var data = new Uint8Array(e.target.result);
+                var workbook = XLSX.read(data, { type: 'array' });
+                var sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+                // 헤더 추가
+                // var headers = Object.keys(sheet).filter(key => /^[A-Z]+1$/.test(key)).map(key => sheet[key].v);
+                // addHeaders(headers);
+
+                // 데이터 행 추가
+                var rows = XLSX.utils.sheet_to_json(sheet, { header: 0, raw: false, defval: '' });
+                addRows(rows);
+            };
+
+            reader.readAsArrayBuffer(file);
+        };
+
+        function addRows(rows) {
+            $.ajax({
+               url: '/songjang_upload',
+               method: 'POST',
+               data: {'data' : rows},
+                success: function (res){
+                   location.reload();
+                }
+            });
+        };
+    });
+</script>

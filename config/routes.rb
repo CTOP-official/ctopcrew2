@@ -1,0 +1,43 @@
+Rails.application.routes.draw do
+  root 'home#index'
+  get '/login' => 'home#login'
+  get '/logout' => 'home#logout'
+  get '/main' => 'home#index'
+  get '/barcode' => 'home#barcode'
+  get '/setTable1' => 'home#setTable1'
+  get '/orderStatus' => 'home#orderStatus'
+  get '/soonje_test' => 'home#soonje_test'
+  get '/csBoard' => 'home#csBoard'
+  get '/orderGet' => 'home#orderGet'
+  get '/apisetting' => 'home#apisetting'
+  post '/checkCode1' => 'home#checkCode1'
+  post '/checkCode2' => 'home#checkCode2'
+  post '/login_action' => 'home#login_action'
+  post '/coupon' => 'home#coupon'
+  post '/order_save' => 'home#order_save'
+  post '/barcode_search' => 'home#barcode_search'
+  post '/delete_action' => 'home#delete_action'
+  post '/download_action7' => 'home#download_action7'
+  post '/download_action8' => 'home#download_action8'
+  post '/download_action9' => 'home#download_action9'
+  post '/download_action_all' => 'home#download_action_all'
+  post '/download_kacu' => 'home#download_kacu'
+  post '/edit_action' => 'home#edit_action'
+  post '/edit_action2' => 'home#edit_action2'
+  post '/songjang_upload' => 'home#songjang_upload'
+  post '/moonja_download' => 'home#moonja_download'
+  post '/csContentUpload' => 'home#csContentUpload'
+  post '/total_download' => 'home#total_download'
+  post '/total_download2' => 'home#total_download2'
+  post '/kakuSave' => 'home#kakuSave'
+  post '/api_update' => 'home#api_update'
+  post '/api_edit' => 'home#api_edit'
+  post '/api_delete' => 'home#api_delete'
+  post '/total_download333' => 'home#total_download333'
+  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
+  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  get "up" => "rails/health#show", as: :rails_health_check
+  # Defines the root path route ("/")
+  # root "posts#index"
+end

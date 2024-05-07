@@ -1,0 +1,111 @@
+<!-- Main page content-->
+<div class="card mb-4">
+    <div class="card-header">
+        <h1>API설정</h1>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <select class="form-control col ms-3" id="where_select3">
+                <option value="쿠팡">쿠팡</option>
+                <option value="11번가">11번가</option>
+                <option value="멸치마켓">멸치마켓</option>
+                <option value="GSS">GSS</option>
+            </select>
+            <input class="form-control col ms-3" id="input_id" type="text" placeholder="아이디" name="search_text">
+            <input class="form-control col ms-3" id="input_pw" type="text" placeholder="비밀번호" name="search_text">
+            <input class="form-control col ms-3" id="input_access" type="text" placeholder="Access Key" name="search_text">
+            <input class="form-control col ms-3" id="input_secret" type="text" placeholder="Secret Key" name="search_text">
+            <button type="button" class="btn btn-primary col-1 ms-3" id="btn_update">등록</button>
+            <button type="button" class="btn btn-success col-1 ms-3" id="btn_update2">수정</button>
+            <button type="button" class="btn btn-danger col-1 ms-3 me-3" id="btn_update3">삭제</button>
+        </div>
+        <table class="table" id="datatablesSimple">
+            <thead>
+                <tr>
+                    <th>check</th>
+                    <th>Id</th>
+                    <th>마켓</th>
+                    <th>등록자</th>
+                    <th>아이디</th>
+                    <th>비밀번호</th>
+                    <th>Access Key</th>
+                    <th>Secret Key</th>
+                    <th>상태</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% @data.each do |i| %>
+                    <tr>
+                    <td><input class="form-check-input soonje_check" id="flexCheckSolidDefault" type="checkbox" value=""></td>
+                    <% i.each do |i2| %>
+                        <td contenteditable="true"><%= i2 %></td>
+                    <% end %>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $("#btn_update").click(function(){
+        $.ajax({
+            url: '/api_update',
+            method: 'POST',
+            data: {'market': $("#where_select3").val(), 'market_id': $("#input_id").val(), 'market_pw': $("#input_pw").val(), 'access_key': $("#input_access").val(), 'secret_key': $("#input_secret").val()},
+            success: function(res){
+                location.reload();
+            }
+        });
+    });
+
+    $("#btn_update2").click(function(){
+        const selectedRows = [];
+        const checkboxes = document.querySelectorAll('.soonje_check');
+        checkboxes.forEach((checkbox, index) => {
+            if (checkbox.checked) {
+                const memory = [];
+                for(i=1;i<9;i++){
+                    const row = $(checkbox).closest('tr').find("td:eq("+i+")").text();
+                    memory.push(row);
+                }
+                selectedRows.push(memory);
+            }
+        });
+
+        $.ajax({
+            url: '/api_edit',
+            method: 'POST',
+            data: {'data' : selectedRows},
+            success: function(res){
+                location.reload();
+            }
+        });
+    });
+
+    $("#btn_update3").click(function(){
+        const selectedRows = [];
+        const checkboxes = document.querySelectorAll('.soonje_check');
+        checkboxes.forEach((checkbox, index) => {
+            if (checkbox.checked) {
+                const memory = [];
+                const row = $(checkbox).closest('tr').find("td:eq(1)").text();
+                selectedRows.push(row);
+            }
+        });
+
+        $.ajax({
+            url: '/api_delete',
+            method: 'POST',
+            data: {'data' : selectedRows},
+            success: function(res){
+                location.reload();
+            }
+        })
+    })
+</script>
+
+
+
+
+
