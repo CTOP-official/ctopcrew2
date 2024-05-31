@@ -1436,6 +1436,30 @@ class HomeController < ApplicationController
 	  return path
 	end
 
+        def soonje_search_view
+          @data = Array.new
+          client = ActiveRecord::Base.connection
+          code = params["code"].to_s
+          result = client.execute("select * from CTOPOPTION2 where barcode = '"+code+"'")
+          result.each do |i|
+             @data << i
+          end
+
+          result = client.execute("select * from CTOPOPTION2 where proId = '"+code+"'")
+          result.each do |i|
+            @data << i
+          end
+
+          if code == "" or code == " "
+
+          else
+            result = client.execute("select * from PRODUCT where proDbName like '%"+code+"%'")
+            result.each do |i|
+              @data << i
+            end
+          end
+        end
+
 	def download_action9
 		data = params['data']
 		time_dd = Time.now.to_s.split(' ')[0].split('-').join('')

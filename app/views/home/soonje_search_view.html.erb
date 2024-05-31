@@ -1,0 +1,25 @@
+<style>
+  table tbody td { min-width : 50px; }
+
+</style>
+
+<form action="/show" method="GET">
+  <input type="text" name="code">
+  <button type="submit">검색</button>
+</form>
+
+<table>
+  <tbody>
+ <% @data.each do |i| %>
+   <tr>
+      <% i.each_with_index do |i2, index| %>
+        <% if index < 6 %>
+          <td style="width:50px"><%=i2%></td>
+        <% else %>
+          <td><%= i2%></td>
+        <% end %>
+      <% end %>
+   </tr>
+ <% end %>
+  </tbody>
+</table>
