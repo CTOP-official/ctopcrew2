@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   post '/api_edit' => 'home#api_edit'
   post '/api_delete' => 'home#api_delete'
   post '/total_download333' => 'home#total_download333'
+  get '/show' => 'home#soonje_search_view' 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
