@@ -546,9 +546,13 @@ class HomeController < ApplicationController
 
 		file_name = Array.new
 		where3 = params['where3'].to_s
-		['CTOP','FC','UM','TP','VM','MDD','CNC','MP'].each do |company_name|
-			file_name << download_action_multi2(company_name, data, params['where2'].to_s, where3)
-		end
+        if where3.include?("B2B")
+                file_name << download_action_multi2("B2B", data, params['where2'].to_s, where3)
+        else
+            ['CTOP','FC','UM','TP','VM','MDD','CNC','MP'].each do |company_name|
+                file_name << download_action_multi2(company_name, data, params['where2'].to_s, where3)
+            end
+        end
         if where3 == '한국' or where3 == '카쿠'
             begin
                 file_name << korea_excel_make(data, where3)
@@ -1211,21 +1215,21 @@ class HomeController < ApplicationController
 					end
                     opt_con22 = '100'
 					if pro_type == '어그'
-					  result = client.execute("select optName1,optCode,optCon, curCon, optName2 from CTOPOPTION2 where barcode = '#{barcode.to_s}'")
-					  result.each do |i|
-						opt = i[0].to_s
-						opt_code = i[1].to_s
-                        opt_con22 = i[3].to_s
-                        opt2 = i[4].to_s
-					  end
+                        result = client.execute("select optName1,optCode,optCon, curCon, optName2 from CTOPOPTION2 where barcode = '#{barcode.to_s}'")
+                        result.each do |i|
+                            opt = i[0].to_s
+                            opt_code = i[1].to_s
+                            opt_con22 = i[3].to_s
+                            opt2 = i[4].to_s
+                        end
 					else
-					  result = client.execute("select optName1, optCode, optCon, curCon, optName2  from CTOPOPTION2 where barcode = '#{barcode.to_s.split('-')[0]}'")
-					  result.each do |i|
-						opt = i[0].to_s
-						opt_code = i[1].to_s
-                        opt_con22 = i[3].to_s
-                        opt2 = i[4].to_s
-					  end
+                        result = client.execute("select optName1, optCode, optCon, curCon, optName2  from CTOPOPTION2 where barcode = '#{barcode.to_s.split('-')[0]}'")
+                        result.each do |i|
+                            opt = i[0].to_s
+                            opt_code = i[1].to_s
+                            opt_con22 = i[3].to_s
+                            opt2 = i[4].to_s
+                        end
 					end
 					result = client.execute("select optCon from CTOPOPTION2 where barcode = '#{barcode.to_s}'")
 					result.each do |i|
@@ -1272,16 +1276,16 @@ class HomeController < ApplicationController
                                         sheet1.row(index+1).push(data2[16].to_s)
                                         end
                                     end
-        end
-    else
+                            end
+                        else
                                 if data2[16].to_s.include?('010')
-                                if data2[16].to_s.include?('0000')
-                                    sheet1.row(index+1).push(data2[17].to_s)
-                                    sheet1.row(index+1).push(data2[18].to_s)
-                                else
-                                    sheet1.row(index+1).push(data2[15].to_s)
-                                    sheet1.row(index+1).push(data2[16].to_s)
-                                end
+                                    if data2[16].to_s.include?('0000')
+                                        sheet1.row(index+1).push(data2[17].to_s)
+                                        sheet1.row(index+1).push(data2[18].to_s)
+                                    else
+                                        sheet1.row(index+1).push(data2[15].to_s)
+                                        sheet1.row(index+1).push(data2[16].to_s)
+                                    end
                                 else
         sheet1.row(index+1).push(data2[17].to_s) #수취인이름
         sheet1.row(index+1).push(data2[18].to_s) #수취인 핸드폰 번호
@@ -1299,7 +1303,182 @@ class HomeController < ApplicationController
 				end
 			end
 		end
-	  elsif where3 == '한국' or where3 == '카쿠'
+        elsif where3 == "B2B해외" or where3 == "B2B국내"
+            workbook = RubyXL::Workbook.new
+            worksheet = workbook[0]
+            worksheet.add_cell(0, 0, '브랜드명')
+            worksheet.add_cell(0, 1, '상품명')
+            worksheet.add_cell(0, 2, '옵션')
+            worksheet.add_cell(0, 3, '도매가')
+            worksheet.add_cell(0, 4, '배송비')
+            worksheet.add_cell(0, 5, '무게')
+            worksheet.add_cell(0, 6, '자체상품코드')
+            worksheet.add_cell(0, 7, '옵션별바코드')
+            worksheet.add_cell(0, 8, '수량')
+            if where3 == "B2B해외"
+                con7 = 1
+                worksheet.add_cell(0, 9, '개인통관부호')
+            else
+                con7 = 0
+            end
+            
+            ['수취인명','수취인연락처','우편번호','전체주소','배송메세지','오픈마켓원주문번호','비고1','비고2','비고3','비고4','비고5'].each_with_index do |colname, index88|
+                worksheet.add_cell(0, 9+index88+con7, colname)
+            end
+
+            index = 1
+
+            data.each_with_index do |i,index2|
+                data2 = Array.new
+                i.split('<td')[1..-1].each do |k|
+                    data2 << k.split('</td>')[0].split('>')[1]
+                end
+
+                if data2[34].to_s.split(' ').join('') == '' or where2 == '강제다운로드'
+                    barcode = data2[12]
+                    procode = data2[11]
+                    godocode = ''
+					opt = ''
+                    opt2 = ''
+					opt_con = 1
+					opt_code = ''
+					pro_name = data2[32].to_s
+					brand_name = ''
+					pro_type = ''
+					pro_where = ''
+                    if ['01','02','03','04','05','06'].include?(procode.to_s.split('-')[-1].to_s)
+                        procode = procode.split('-')[0..-2].join('-')
+                    end
+
+                    result = client.execute("select brandName, godocode, proName, proType, name1 from PRODUCT where procode = '#{procode.to_s}'")
+					result.each do |i|
+                        brand_name = i[0].to_s
+                        godocode = i[1].to_s
+                        pro_type = i[3].to_s
+                        pro_where = i[4].to_s
+                        pro_name = i[2]
+                        break
+					end
+
+                    opt_con22 = '100'
+					if pro_type == '어그'
+                        result = client.execute("select optName1,optCode,optCon, curCon, optName2 from CTOPOPTION2 where barcode = '#{barcode.to_s}'")
+                        result.each do |i|
+                            opt = i[0].to_s
+                            opt_code = i[1].to_s
+                            opt_con22 = i[3].to_s
+                            opt2 = i[4].to_s
+                        end
+					else
+                        result = client.execute("select optName1, optCode, optCon, curCon, optName2  from CTOPOPTION2 where barcode = '#{barcode.to_s.split('-')[0]}'")
+                        result.each do |i|
+                            opt = i[0].to_s
+                            opt_code = i[1].to_s
+                            opt_con22 = i[3].to_s
+                            opt2 = i[4].to_s
+                        end
+					end
+					result = client.execute("select optCon from CTOPOPTION2 where barcode = '#{barcode.to_s}'")
+					result.each do |i|
+					    opt_con = i[0].to_i
+					end
+
+                    if ['01','02','03','04','05','06'].include?(barcode.to_s.split('-')[-1].to_s)
+                        barcode = barcode.split('-')[0..-2].join('-')
+                    end
+
+                    if pro_where == "한국" and where3 == "B2B국내"
+                        action_1 = 1
+                    elsif pro_where != "한국" and where3 == "B2B해외"
+                        action_1 = 1
+                    else
+                        action_1 = 2
+                    end
+
+                    if action_1 == 2 or opt_con22 == '0' or pro_type == "상품권" or (opt+' '+opt2).include?('카쿠') or barcode.to_s == '89343202002665'
+
+                    else
+                        action_check = 1
+						pro_con = (opt_con.to_i * data2[14].to_i).to_s
+                        soonje_memory = Array.new
+                        
+                        soonje_memory << brand_name
+                        soonje_memory << pro_name
+                        soonje_memory << opt + '/' + opt2
+                        soonje_memory << ""
+                        soonje_memory << ""
+                        soonje_memory << ""
+
+                        soonje_memory << procode
+                        soonje_memory << barcode
+                        soonje_memory << pro_con
+
+                        if where3 == "B2B해외"
+                            soonje_memory << data2[19]
+                        end
+
+                        port_number_status = data2[33].to_s 
+                        if port_number_status.include?('정상')
+                            if port_number_status.include?('주문자')
+                                soonje_memory << data2[15].to_s
+                                if data2[16].to_s.include?('0000')
+                                    soonje_memory << data2[18].to_s
+                                else
+                                    if data2[16].to_s.include?('010')
+                                        soonje_memory << data2[16].to_s
+                                    else
+                                        soonje_memory << data2[18].to_s
+                                    end
+                                end
+                            else
+                                soonje_memory << data2[17].to_s
+                                if data2[18].to_s.include?('0000')
+                                    soonje_memory <<  data2[16].to_s
+                                else
+                                    if data2[18].to_s.include?('010')
+                                        soonje_memory << data2[18].to_s
+                                    else
+                                        soonje_memory << data2[16].to_s
+                                    end
+                                end
+                                end
+                            else
+                            if data2[16].to_s.include?('010')
+                                if data2[16].to_s.include?('0000')
+                                    soonje_memory << data2[17].to_s
+                                    soonje_memory << data2[18].to_s
+                                else
+                                    soonje_memory << data2[15].to_s
+                                    soonje_memory << data2[16].to_s
+                                end
+                            else
+                                soonje_memory << data2[17].to_s #수취인이름
+                                soonje_memory << data2[18].to_s #수취인 핸드폰 번호
+                            end
+                        end
+
+
+                        soonje_memory << data2[20]
+                        soonje_memory << data2[21]
+                        soonje_memory << data2[22]
+
+                        soonje_memory << data2[10].to_s
+                        soonje_memory << data2[4].to_s
+                        soonje_memory << data2[5].to_s
+                        soonje_memory << data2[9].to_s
+                        soonje_memory << data2[15].to_s
+                        soonje_memory << data2[16].to_s
+
+                        soonje_memory.each_with_index do |cc, index33|
+                            worksheet.add_cell(index, index33, cc)
+                        end
+
+                        index += 1
+                    end
+                end
+            end
+
+	    elsif where3 == '한국' or where3 == '카쿠'
 		column_name << '주문번호'
 		column_name << '주문일'
 		column_name << '수령자명'
@@ -1429,9 +1608,22 @@ class HomeController < ApplicationController
 	  end
 
 	  time_dd = Time.now.to_s.split(' ')[0].split('-').join('')
-      path = './public/excel/'+time_dd+'/'+time_dd+'-'+company_name+'.xls'
+      if where3 == "B2B해외" or where3 == "B2B국내"
+        if where3 == "B2B해외"
+            naruto_name = "(해외)"
+        else
+            naruto_name = "(국내)"
+        end
+        path = './public/excel/'+time_dd+'/'+time_dd+'-'+company_name+' '+naruto_name+'.xlsx'
+      else
+        path = './public/excel/'+time_dd+'/'+time_dd+'-'+company_name+'.xls'
+      end
       if action_check == 1
-	    book.write path
+        if where3 == "B2B해외" or where3 == "B2B국내"
+            workbook.write path
+        else
+            book.write path
+        end
       end
 	  return path
 	end
@@ -1821,6 +2013,51 @@ class HomeController < ApplicationController
         render :json => {'result' => answer}
     end
 
+    def optionEditAction
+        id = params["id"].to_s
+        proid = params["proId"].to_s
+        barcode = params['barcode'].to_s
+        option1 = params['option1'].to_s
+        option2 = params['option2'].to_s
+        price1 = params['price1'].to_s
+        price2 = params['price2'].to_s
+        curCon = params['curCon'].to_s
+        client = ActiveRecord::Base.connection
+        if barcode == "" or proid == "" or id == ""
+
+        else
+            client.execute("update CTOPOPTION2 set proId = '#{proid}', barcode = '#{barcode}', optName1 = '#{option1}', optName2 = '#{option2}', price = '#{price1}', priceDel = '#{price2}', curCon = '#{curCon}' where _id = #{id}")
+        end
+
+        render :json => {'result' => "ok"}
+    end
+
+    def optionStatus
+        @data = Array.new
+        client = ActiveRecord::Base.connection
+        search_type = params['type'].to_s
+        search_value = params['search'].to_s
+        page1 = params['page'].to_s
+        pagesize = params['size'].to_s
+
+        if page1 == ''
+            page1 = '0'
+        end
+
+        if pagesize == ''
+            pagesize = '300'
+        end
+
+        if search_type == ''
+            search_type = 'barcode'
+        end
+
+        result = client.execute("select * from CTOPOPTION2 where #{search_type} like \"#{search_value}%\" limit #{page1}, #{pagesize}")
+        result.each do |i|
+            @data << i
+        end
+    end
+
     def orderStatus
         @data = Array.new
         client = ActiveRecord::Base.connection
@@ -1876,6 +2113,9 @@ class HomeController < ApplicationController
                     break
                 end
             end
+            # if cc[33].to_s.include?('휴대폰')
+            #     cc[33]
+            # end
             @data << cc
         end
     end

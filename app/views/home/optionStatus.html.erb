@@ -1,0 +1,89 @@
+<div class="card mb-4">
+    <div class="card-header">
+        <h1>품절관리</h1>
+    </div>
+    <div class="card-body">
+        <form action="/optionStatus" method="GET">
+            <div class="row">
+                <div class="col-2 ms-2">
+                    <select class="form-select" name="type">
+                        <option value="proId">상품코드</option>
+                        <option value="barcode">바코드</option>
+                        <option value="curCon">수량</option>
+                    </select>
+                </div>
+
+                <div class="col-2">
+                    <input type="text" class="form-control" name="search">
+                </div>
+
+                <div class="col-2">
+                    <button type="submit" class="btn btn-primary">검색</button>
+                </div>
+            </div>
+        </form>
+
+        <div style="width:100%; height:600px; overflow:auto;" id="table-container" class="m-2">
+            <table id="datatablesSimple" width="2000px;" style="overflow-y:scroll;">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>상품아이디</th>
+                        <th>바코드</th>
+                        <th>옵션1</th>
+                        <th>옵션2</th>
+                        <th>가격</th>
+                        <th>배송가격</th>
+                        <th>수량</th>
+                        <th>수정</th>
+                    </tr>
+                </thead>
+
+                <tbody contenteditable="true">
+                    <% @data.each_with_index do |i,index| %>
+                        <tr>
+                            <td><%= i[0] %></td>
+                            <td><%= i[1] %></td>
+                            <td><%= i[2] %></td>
+                            <td><%= i[4] %></td>
+                            <td><%= i[5] %></td>
+                            <td><%= i[8] %></td>
+                            <td><%= i[9] %></td>
+                            <td><%= i[11] %></td>
+                            <td contenteditable="false"><button type='button' class='btn btn-primary edit_button'>수정</button></td>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>            
+        </div>
+    </div>
+</div>
+
+<script>
+    $(".edit_button").click(function(){
+        var tds = $(this).parent("td").parent("tr").find("*");
+        var id = tds[0].textContent
+        $.ajax({
+            url: "/optionEditAction",
+            type: "POST",
+            data: {
+                "id" : id,
+                "proId" : tds[1].textContent,
+                "barcode" : tds[2].textContent,
+                "option1" : tds[3].textContent,
+                "option2" : tds[4].textContent,
+                "price1" : tds[5].textContent,
+                "price2" : tds[6].textContent,
+                "curCon" : tds[7].textContent
+            },
+            success: function(res){
+                console.log(res)
+                alert("수정완료");
+            },
+            error: function(error){
+                console.log(error)
+            }
+        })
+    })
+	
+</script>
