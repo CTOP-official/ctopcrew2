@@ -130,6 +130,7 @@ class HomeController < ApplicationController
 
                         else
                             barcode = db_row[2]
+                            break
                         end
                     end
                 end
