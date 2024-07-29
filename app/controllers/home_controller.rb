@@ -35,10 +35,8 @@ class HomeController < ApplicationController
         answer = i
         end
         if result.size == 0
-        puts answer
         render :json => {'result' => 'fail'}
         else
-        p answer
         session[:id] = answer[1].to_s
         session[:name] = answer[3].to_s
         session[:power] = answer[4].to_s
@@ -59,7 +57,6 @@ class HomeController < ApplicationController
         result.each do |i|
           answer = 'false'
         end
-        puts answer
         render :json => {'result' => answer}
     end
 
@@ -111,12 +108,12 @@ class HomeController < ApplicationController
                     end
                 end
 
-                if barcode.to_s.split(' ').join('') == ''
-                    result8 = client.execute("SELECT barcode FROM CTOPORDER where productName = '#{params['option'].to_s}'")
-                    result8.each do |db_row|
-                        barcode = db_row[0]
-                    end
-                end
+                # if barcode.to_s.split(' ').join('') == ''
+                #     result8 = client.execute("SELECT barcode FROM CTOPORDER where productName = '#{params['option'].to_s}'")
+                #     result8.each do |db_row|
+                #         barcode = db_row[0]
+                #     end
+                # end
             else
                 if barcode_html == '카쿠'
                     result2 = client.execute("SELECT * FROM CTOPOPTION2 where proId = '#{code_value}' and (optName1 like '%카쿠%' or optName2 like '%카쿠%')")
@@ -150,7 +147,6 @@ class HomeController < ApplicationController
             else
                 html.split('<td')[1..-1].each do |td|
                     row = td.to_s.split('</td>')[0].split('>')[-1]
-                    p row
                     td_list << row
                 end
 
@@ -225,7 +221,6 @@ class HomeController < ApplicationController
                             end
                         rescue => e
                             m['api_result'] = 'api_error'
-                            puts e
                         end
 
                         m2 = m.values
@@ -234,7 +229,6 @@ class HomeController < ApplicationController
                         end
 
                         q = 'insert into CTOPORDER('+m.keys.join(',')+') values('+m2.join(',')+')'
-                        puts q
                         client.execute(q)
                     end
                 end
@@ -251,6 +245,7 @@ class HomeController < ApplicationController
         option = option.split(',')[-1]
         option = option.split(' ')[-1]
         option = option.split(':')[-1]
+        option = option.split(';')[-1]
         size_korea2 = [225, 230, 235, 240, 245, 250, 255, 260, 265, 270, 275, 280]
         size_eu = [34,35,36,37,38,39,40,41,42,43,44,45]
         size_hoju = [3,4,5,6,7,8,9,10,11,12,13,14]
@@ -449,7 +444,6 @@ class HomeController < ApplicationController
                         # if pro_where == where_country or (where_country == '호주' and pro_where != '한국' and pro_where != '중국')
                         if true
 							pro_con = (opt_con.to_i * data2[14].to_i).to_s
-							puts opt
 							sheet1.row(index+1).push(data2[4].to_s+'-'+data2[5].to_s) #회원명
 							sheet1.row(index+1).push(brand_name) #브랜드명
 							sheet1.row(index+1).push(godocode)
@@ -486,9 +480,7 @@ class HomeController < ApplicationController
                 end
             end
             where = params['where'].to_s
-            puts where
             path = './public/excel/'+Time.now.to_i.to_s+'-'+session[:id].to_s+'-'+where+'.xls'
-            puts path
             book.write path
 
             render :json => {'result' => 'ok' , 'answer' => path.split('./public')[1]}
@@ -561,10 +553,8 @@ class HomeController < ApplicationController
                 puts '한국통합엑셀만드는중 에러...'
                 puts e
             end
-            p file_name
         end
 		dir_name2 = dir_name+'-'+where3+'.zip'
-		puts dir_name2
         begin
             File.open(dir_name2, 'r') do |f|
                 File.delete(f)
@@ -1145,7 +1135,6 @@ class HomeController < ApplicationController
 			  	data2 << k.split('</td>')[0].split('>')[1]
 			end
 
-            p data2
         end
 
         render :json => {}
@@ -1222,6 +1211,8 @@ class HomeController < ApplicationController
                             opt_code = i[1].to_s
                             opt_con22 = i[3].to_s
                             opt2 = i[4].to_s
+                            pro_name = pro_name.split(' ')[0..-1].join(' ') + opt + ' ' + opt2
+                            break
                         end
 					else
                         result = client.execute("select optName1, optCode, optCon, curCon, optName2  from CTOPOPTION2 where barcode = '#{barcode.to_s.split('-')[0]}'")
@@ -1242,7 +1233,6 @@ class HomeController < ApplicationController
 					else
                         action_check = 1
 						pro_con = (opt_con.to_i * data2[14].to_i).to_s
-						puts opt
 						sheet1.row(index+1).push(data2[4].to_s+'-'+data2[5].to_s) #회원명
 						sheet1.row(index+1).push(brand_name) #브랜드명
 						sheet1.row(index+1).push(godocode)
@@ -1369,6 +1359,8 @@ class HomeController < ApplicationController
                             opt_code = i[1].to_s
                             opt_con22 = i[3].to_s
                             opt2 = i[4].to_s
+                            pro_name = pro_name.split(' ')[0..-1].join(' ') + opt + ' ' + opt2
+                            break
                         end
 					else
                         result = client.execute("select optName1, optCode, optCon, curCon, optName2  from CTOPOPTION2 where barcode = '#{barcode.to_s.split('-')[0]}'")
@@ -1542,6 +1534,8 @@ class HomeController < ApplicationController
                             opt_code = i[1].to_s
                             opt_code22 = i[3].to_s
                             opt2 = i[4].to_s
+                            pro_name = pro_name.split(' ')[0..-1].join(' ') + opt + ' ' + opt2
+                            break
                         end
                     else
                         result = client.execute("select optName1, optCode, optCon, curCon, optName2 from CTOPOPTION2 where barcode = '#{barcode.to_s.split('-')[0]}'")
@@ -1582,7 +1576,6 @@ class HomeController < ApplicationController
                             client.execute("update CTOPORDER set download1 = '#{time_text}', date3 = '#{time_text}' where _id = #{data2[0].to_s}")
                         end
                     else
-                        puts '카쿠-----------------------'+opt.to_s+'-------------------'+opt2.to_s
                         if (opt.to_s + opt2.to_s).include?('카쿠') or barcode.to_s == '89343202002665'
                             action_check = 1
                             sheet1.row(index+1).push(data2[10])
@@ -1687,7 +1680,6 @@ class HomeController < ApplicationController
         rescue
 
         end
-		puts dir_name2
 		Zip::File.open(dir_name2, Zip::File::CREATE) do |zipfile|
 		  	file_name.each do |file|
                 begin
@@ -1763,7 +1755,6 @@ class HomeController < ApplicationController
 			    i.split('<td')[1..-1].each do |k|
 				    data2 << k.split('</td>')[0].split('>')[1]
 			    end
-                p data2
 			    if data2[35].to_s.split(' ').join('') == '' or where2 == '강제다운로드'
 				    if data2[4].to_s == company
 					    barcode = data2[12].split(' ').join('')
@@ -1789,7 +1780,6 @@ class HomeController < ApplicationController
 							    break
 						    end
 					    end
-					    puts url
 					    pro_type = '어그'
                         procode2 = data2[11].to_s
                         if data2[11].to_s == 'NT-LUNG'
@@ -1857,7 +1847,6 @@ class HomeController < ApplicationController
 			end
 			time_dd = Time.now.to_s.split(' ')[0].split('-').join('')
 		    path = './public/excel/'+time_dd+'/'+time_dd+'-'+company+'.xlsx'
-		    puts path
             if action_check == 1
 		        workbook.write path
             else
@@ -1948,7 +1937,6 @@ class HomeController < ApplicationController
             begin
                 db_id = i.split('<td>')[1].split('</td>')[0]
                 q = 'delete from CTOPORDER where _id = '+db_id.to_s
-                puts q
                 client.execute(q)
             rescue => e
                 puts e
@@ -2135,8 +2123,6 @@ class HomeController < ApplicationController
         myXML  = Crack::XML.parse(req.to_s)
         myJSON = myXML.to_json
         myJSON = JSON.parse(myJSON)
-        p [num, name, tel]
-        puts myJSON
         result = myJSON['persEcmQryRtnVo']
         if result['tCnt'].to_s == '1'
             return "1"
@@ -2154,7 +2140,6 @@ class HomeController < ApplicationController
       data = params['data']
       data.each do |i|
         data2 = i[1]
-        p data2
         if data2['비고2'].to_s == ''
             if data2['소매주문번호'].to_s == ''
                 some_number = data2['주문번호'].to_s.split(' ').join('')
@@ -2269,7 +2254,6 @@ class HomeController < ApplicationController
                 end
 		    end
 		    path = './public/excel/'+Time.now.to_i.to_s+'-'+session[:id].to_s+'-문자발송내용.xls'
-		    puts path
 		    book.write path
 
 		    render :json => {'result' => 'ok' , 'answer' => path.split('./public')[1]}
@@ -2325,7 +2309,6 @@ class HomeController < ApplicationController
         memory2 = memory.map { |i|
             '"'+i.to_s+'"'
         }
-        p memory
         query = 'insert into MARKETAPI(market, username, market_id, market_pw, access_key, secret_key, status) values('+memory2.join(',')+')'
         client.execute(query)
 
@@ -2336,7 +2319,6 @@ class HomeController < ApplicationController
         client = ActiveRecord::Base.connection
         id_list = params['data']
         id_list.each do |i|
-            p i[1]
             id_value = i[1][0].to_s
             edit_data = i[1][1..-1]
             index = 0
@@ -2357,7 +2339,6 @@ class HomeController < ApplicationController
     def api_delete
         client = ActiveRecord::Base.connection
         id_list = params['data']
-        p id_list
         id_list.each do |id|
             q = 'delete from MARKETAPI where _id = '+id.to_s
             client.execute(q)
