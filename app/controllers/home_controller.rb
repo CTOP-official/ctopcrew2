@@ -2144,7 +2144,7 @@ class HomeController < ApplicationController
             if result['persEcmQryRtnErrInfoVo'].to_s.include?("존재하지") or result['persEcmQryRtnErrInfoVo'].to_s.include?("성명과 일치하지")
                 return "3"
             else
-                return "2"
+                return "3"
             end
         end
     end
