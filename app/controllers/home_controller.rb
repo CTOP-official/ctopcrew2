@@ -1913,7 +1913,7 @@ class HomeController < ApplicationController
                     m['bin3'] = data2[38]
                     m2 = Array.new
                     m.each do |key,value|
-                        m2 << key + ' = "' + value.to_s + '"'
+                        m2 << key + ' = "' + value.to_s.split('"').join('"') + '"'
                     end
 
                     q = 'update CTOPORDER set '+m2.join(',')+' where _id = ' + db_id.to_s
@@ -2015,7 +2015,8 @@ class HomeController < ApplicationController
         if barcode == "" or proid == "" or id == ""
 
         else
-            client.execute("update CTOPOPTION2 set proId = '#{proid}', barcode = '#{barcode}', optName1 = '#{option1}', optName2 = '#{option2}', price = '#{price1}', priceDel = '#{price2}', curCon = '#{curCon}' where _id = #{id}")
+            query = "update CTOPOPTION2 set proId = '#{proid}', barcode = '#{barcode}', optName1 = '#{option1}', optName2 = '#{option2}', price = '#{price1}', priceDel = '#{price2}', curCon = '#{curCon}' where _id = #{id}"
+            client.execute(query)
         end
 
         render :json => {'result' => "ok"}
@@ -2091,22 +2092,22 @@ class HomeController < ApplicationController
         # @time = '2024-02-28'
         # @time2 = '2024-02-28'
         @search_text = params['search_text'].to_s
-        result = client.execute("select * from CTOPORDER where #{@date_option_name_dict[@date_option]} >= '#{@time}' and #{@date_option_name_dict[@date_option]} <= '#{@time2}' and #{@select2_name_dict[@date_option2]} like '%#{@search_text}%'")
-        result.each do |i|
-            barcode = i[12].to_s
-            cc = i
-            result2 = client.execute('select curCon from CTOPOPTION2 where barcode = "'+barcode.to_s+'"')
-            result2.each do |kk|
-                if kk[0].to_s == '0'
-                    cc[6] = cc[6].to_s + '품절'
-                    break
-                end
-            end
-            # if cc[33].to_s.include?('휴대폰')
-            #     cc[33]
-            # end
-            @data << cc
-        end
+        @data = client.execute("select DISTINCT c._id, c.date1, c.date2, c.date3, c.name1, c.market1, c.date4, CASE WHEN i.curCon IS NULL OR i.curCon = '0' THEN '품절' ELSE c.deliNo END AS deliNo, c.code1, c.unicode, c.code2, c.procode, c.barcode, c.con1, c.optcon, c.ordName, c.ordTel, c.getName, c.getTel, c.pnum, c.enum, c.home, c.messege, c.che1, c.moneyNum, c.money1, c.money2, c.money3, c.money4, c.moneyDate, c.money5, c.money6, c.productName, c.api_result, c.download1, c.download2, c.bin1, c.bin2, c.bin3 from CTOPORDER c LEFT JOIN CTOPOPTION2 i ON c.barcode = i.barcode where c.#{@date_option_name_dict[@date_option]} >= '#{@time}' and c.#{@date_option_name_dict[@date_option]} <= '#{@time2}' and c.#{@select2_name_dict[@date_option2]} like '%#{@search_text}%'")
+        # result.each do |i|
+        #     barcode = i[12].to_s
+        #     cc = i
+        #     result2 = client.execute('select curCon from CTOPOPTION2 where barcode = "'+barcode.to_s+'"')
+        #     result2.each do |kk|
+        #         if kk[0].to_s == '0'
+        #             cc[6] = cc[6].to_s + '품절'
+        #             break
+        #         end
+        #     end
+        #     # if cc[33].to_s.include?('휴대폰')
+        #     #     cc[33]
+        #     # end
+        #     @data << cc
+        # end
     end
 
     def soonje_test
@@ -2169,15 +2170,15 @@ class HomeController < ApplicationController
           if pro_name.include?('상품권')
 
           else
-                if data2['비고2'].to_s == ''
-                    if data2['소매주문번호'].to_s == ''
-                        client.execute("update CTOPORDER set deliNo = '#{data2['운송장번호'].to_s}', date4 = '#{Time.now.to_s.split(' ')[0]}' where _id = #{order_id.to_s}")
-                    else
-                        client.execute("update CTOPORDER set deliNo = '#{data2['송장번호'].to_s}', code1 = '#{data2['도매주문번호'].to_s}', date4 = '#{Time.now.to_s.split(' ')[0]}' where _id = #{order_id.to_s}")
-                    end
+            if data2['비고2'].to_s == ''
+                if data2['소매주문번호'].to_s == ''
+                    client.execute("update CTOPORDER set deliNo = '#{data2['운송장번호'].to_s}', date4 = '#{Time.now.to_s.split(' ')[0]}' where _id = #{order_id.to_s}")
                 else
-                    client.execute("update CTOPORDER set bin2 = '#{data2['비고2'].to_s}' where _id = #{order_id.to_s}")
+                    client.execute("update CTOPORDER set deliNo = '#{data2['송장번호'].to_s}', code1 = '#{data2['도매주문번호'].to_s}', date4 = '#{Time.now.to_s.split(' ')[0]}' where _id = #{order_id.to_s}")
                 end
+            else
+                client.execute("update CTOPORDER set bin2 = '#{data2['비고2'].to_s}' where _id = #{order_id.to_s}")
+            end
           end
         end
       end
