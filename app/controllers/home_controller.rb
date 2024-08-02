@@ -2110,12 +2110,38 @@ class HomeController < ApplicationController
         # end
     end
 
+    def product_add
+
+    end
+
     def soonje_test
         client = ActiveRecord::Base.connection
         result = client.execute('select * from CTOPORDER limit 3')
         result.each do |i|
             p i
         end
+    end
+
+    def product_add_action
+        client = ActiveRecord::Base.connection
+        product = params['product']
+        options = params['options']
+
+        product = product.map do |i|
+            "'"+i.to_s.split('"').join('').split("'").join('')+"'"
+        end
+
+        q = "insert into PRODUCT(supType, comName, name1, name2, selName, proType, enbrandName, enName, brandName, procode, proName, counter, godocode, tel) values("+product.join(',')+")"
+        client.execute(q)
+        options.each do |key, v|
+            op = v.map do |k|
+                "'"+k.to_s.split('"').join('').split("'").join('')+"'"
+            end
+            q2 = "insert into CTOPOPTION2(proId, barcode, conCheck, optName1, optName2, optCon, optCode, price, priceDel, url, curCon) values("+op.join(',')+")"
+            client.execute(q2)
+        end
+
+        render :json => {'result' => 'ok'}
     end
 
     def money_api(num, name, tel)

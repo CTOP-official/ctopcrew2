@@ -1,0 +1,124 @@
+<div class="card mb-4">
+    <div class="card-header">
+        <button class="btn btn-success" type="button" id="save_button">저장</button>
+    </div>
+    <div class="card-body">
+        <div style="width:100%; overflow:auto;" id="table-container" class="m-2">
+            <table id="datatablesSimple" width="1500px;" style="overflow-y:scroll;">
+                <thead>
+                    <tr>
+                        <th scope="col">supType</th>
+                        <th scope="col">comName</th>
+                        <th scope="col">name1</th>
+                        <th>name2</th>
+                        <th>selName</th>
+                        <th>proType</th>
+                        <th>enbrandName</th>
+                        <th>enName</th>
+                        <th>brandName</th>
+                        <th>procode</th>
+                        <th>proName</th>
+                        <th>counter</th>
+                        <th>godocode</th>
+                        <th>tel</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tbody1">
+                    <tr>
+                        <td><input type="text" placeholder="구매대행" class='form-control'></td>
+                        <td><input type="text" placeholder="CNC_CTOP" class='form-control'></td>
+                        <td><input type="text" placeholder="호주" class='form-control'></td>
+                        <td><input type="text" placeholder="AU" class='form-control'></td>
+                        <td><input type="text" placeholder="CTOP" class='form-control'></td>
+                        <td><input type="text" placeholder="건기식" class='form-control'></td>
+                        <td><input type="text" placeholder="CNC NUTRITION" class='form-control'></td>
+                        <td><input type="text" placeholder="영어이름" class='form-control'></td>
+                        <td><input type="text" placeholder="씨앤씨뉴트리션" class='form-control'></td>
+                        <td><input type="text" placeholder="CNCGLM120" class='form-control'></td>
+                        <td><input type="text" placeholder="초록입홍합 20000 120정" class='form-control'></td>
+                        <td><input type="text" placeholder="초록입홍합 20000" class='form-control'></td>
+                        <td><input type="text" placeholder="1000000022" class='form-control'></td>
+                        <td><input type="text" placeholder="070-7424-7778" class='form-control'></td>
+                    <tr>
+                </tbody>
+            </table>
+        </div>
+
+        <button class="btn btn-success ms-2" type="button" id="option_add">옵션칸추가</button>
+
+        <div style="width:100%; overflow:auto;" id="table-container" class="m-2">
+            <table id="datatablesSimple" width="1500px;" style="overflow-y:scroll;">
+                <thead>
+                    <tr>
+                        <th scope="col">proId</th>
+                        <th scope="col">barcode</th>
+                        <th scope="col">conCheck</th>
+                        <th>optName1</th>
+                        <th>optName2</th>
+                        <th>optCon</th>
+                        <th>optCode</th>
+                        <th>price</th>
+                        <th>priceDel</th>
+                        <th>url</th>
+                        <th>curCon</th>
+                    </tr>
+                </thead>
+
+                <tbody id="option_tbody">
+                    <tr>
+                        <td><input type="text" placeholder="CNCGLM120" class='form-control'></td>
+                        <td><input type="text" placeholder="9343202002665" class='form-control'></td>
+                        <td><input type="text" placeholder="" class='form-control'></td>
+                        <td><input type="text" placeholder="120정" class='form-control'></td>
+                        <td><input type="text" placeholder="." class='form-control'></td>
+                        <td><input type="text" placeholder="1" class='form-control'></td>
+                        <td><input type="text" placeholder="65" class='form-control'></td>
+                        <td><input type="text" placeholder="" class='form-control'></td>
+                        <td><input type="text" placeholder="" class='form-control'></td>
+                        <td><input type="text" placeholder="" class='form-control'></td>
+                        <td><input type="text" placeholder="100" class='form-control'></td>
+                    <tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#option_add").click(function() {
+        var firstRow = $("#option_tbody tr:first").clone();
+        $("#option_tbody").append(firstRow);
+    });
+
+    $("#save_button").click(function() {
+        var product = [];
+        var options = [];
+        var tds = $("#tbody1").children().eq(0).children();
+        tds.each(function(i){
+            product.push(tds.eq(i).children().eq(0).val());
+        });
+
+        trs2 = $("#option_tbody").children()
+        trs2.each(function(i2){
+            op_data = [];
+            tds3 = trs2.eq(i2).children()
+            tds3.each(function(i3){
+                op_data.push(tds3.eq(i3).children().eq(0).val());
+            })
+            options.push(op_data);
+        })
+
+        $.ajax({
+            url: '/product_add_action',
+            type: 'POST',
+            data: {
+                'product' : product,
+                'options' : options
+            },
+            success: function(res){
+                alert("저장성공");        
+            }
+        })
+    });
+</script>
