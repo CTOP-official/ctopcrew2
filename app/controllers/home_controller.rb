@@ -80,40 +80,45 @@ class HomeController < ApplicationController
             if pro_type.to_s == ''
 
             elsif pro_type.to_s == '어그'
-                result2 = client.execute("SELECT * FROM CTOPOPTION2 where proId = '#{code_value}'")
-                db_option_datas = Array.new
-                result2.each do |db_row|
-                    db_option_datas << db_row
-                end
-                rate = 0
-                sel_option = ''
-                db_option_datas.each do |option_data|
-                    rate2 = jarow.getDistance(option_value, option_data[4].to_s)
-                    if rate2 > rate
-                        rate = rate2
-                        sel_option = option_data[4].to_s
+                if code_value == "OB755"
+                    
+                else
+                    result2 = client.execute("SELECT * FROM CTOPOPTION2 where proId = '#{code_value}'")
+                    db_option_datas = Array.new
+                    result2.each do |db_row|
+                        db_option_datas << db_row
                     end
-                end
+                    rate = 0
+                    sel_option = ''
+                    db_option_datas.each do |option_data|
+                        rate2 = jarow.getDistance(option_value, option_data[4].to_s)
+                        if rate2 > rate
+                            rate = rate2
+                            sel_option = option_data[4].to_s
+                        end
+                    end
 
-                db_option_datas.each do |option_data|
-                    if sel_option == option_data[4].to_s
-                        barcode_array << [option_data[2].to_s + '  ' + sel_option.to_s + '  ' + option_data[5].to_s, option_data[2].to_s]
-                        option_a = option_robot(option_value)
-                        option_b = option_robot(option_data[5].to_s)
-                        if option_a != 'no'
-                            if option_a == option_b
-                                barcode = option_data[2].to_s
+                    db_option_datas.each do |option_data|
+                        if sel_option == option_data[4].to_s
+                            barcode_array << [option_data[2].to_s + '  ' + sel_option.to_s + '  ' + option_data[5].to_s, option_data[2].to_s]
+                            option_a = option_robot(option_value)
+                            option_b = option_robot(option_data[5].to_s)
+                            if option_a != 'no'
+                                if option_a == option_b
+                                    barcode = option_data[2].to_s
+                                end
                             end
                         end
                     end
-                end
+                
 
-                # if barcode.to_s.split(' ').join('') == ''
-                #     result8 = client.execute("SELECT barcode FROM CTOPORDER where productName = '#{params['option'].to_s}'")
-                #     result8.each do |db_row|
-                #         barcode = db_row[0]
-                #     end
-                # end
+                    if barcode.to_s.split(' ').join('') == ''
+                        result8 = client.execute("SELECT barcode FROM CTOPORDER where productName = '#{params['option'].to_s}'")
+                        result8.each do |db_row|
+                            barcode = db_row[0]
+                        end
+                    end
+                end
             else
                 if barcode_html == '카쿠'
                     result2 = client.execute("SELECT * FROM CTOPOPTION2 where proId = '#{code_value}' and (optName1 like '%카쿠%' or optName2 like '%카쿠%')")
@@ -2092,7 +2097,7 @@ class HomeController < ApplicationController
         # @time = '2024-02-28'
         # @time2 = '2024-02-28'
         @search_text = params['search_text'].to_s
-        @data = client.execute("select DISTINCT c._id, c.date1, c.date2, c.date3, c.name1, c.market1, c.date4, CASE WHEN i.curCon IS NULL OR i.curCon = '0' THEN '품절' ELSE c.deliNo END AS deliNo, c.code1, c.unicode, c.code2, c.procode, c.barcode, c.con1, c.optcon, c.ordName, c.ordTel, c.getName, c.getTel, c.pnum, c.enum, c.home, c.messege, c.che1, c.moneyNum, c.money1, c.money2, c.money3, c.money4, c.moneyDate, c.money5, c.money6, c.productName, c.api_result, c.download1, c.download2, c.bin1, c.bin2, c.bin3 from CTOPORDER c LEFT JOIN CTOPOPTION2 i ON c.barcode = i.barcode where c.#{@date_option_name_dict[@date_option]} >= '#{@time}' and c.#{@date_option_name_dict[@date_option]} <= '#{@time2}' and c.#{@select2_name_dict[@date_option2]} like '%#{@search_text}%'")
+        @data = client.execute("select DISTINCT c._id, c.date1, c.date2, c.date3, c.name1, c.market1, c.date4, CASE WHEN i.curCon IS NULL OR i.curCon = '0' THEN '품절' ELSE c.deliNo END AS deliNo, c.code1, c.unicode, c.code2, c.procode, c.barcode, c.con1, c.optcon, c.ordName, c.ordTel, c.getName, c.getTel, c.pnum, c.enum, c.home, c.messege, c.che1, c.moneyNum, c.money1, c.money2, c.money3, c.money4, c.moneyDate, c.money5, c.money6, c.productName, c.api_result, c.download1, c.download2, c.bin1, c.bin2, c.bin3 from CTOPORDER c LEFT JOIN CTOPOPTION2 i ON c.barcode = i.barcode where c.#{@date_option_name_dict[@date_option]} >= '#{@time}' and c.#{@date_option_name_dict[@date_option]} <= '#{@time2}' and c.#{@select2_name_dict[@date_option2]} like '%#{@search_text}%' ORDER BY _id ASC")
         # result.each do |i|
         #     barcode = i[12].to_s
         #     cc = i

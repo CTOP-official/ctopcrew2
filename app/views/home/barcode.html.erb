@@ -74,7 +74,7 @@
                     </span>
                 </div>
                 <select class="form-control" id="mySelect">
-
+                    
                 </select>
             </div>
             <div class="modal-footer"><button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button><button class="btn btn-primary" type="button" data-bs-dismiss="modal" id="button_save">Save changes</button></div>
@@ -367,6 +367,7 @@
             for(i=0; i < dataMemory[id].length ; i++){
                 $("#mySelect").append("<option value='"+dataMemory[id][i][1]+"'>"+dataMemory[id][i][0]+"</option>");
             }
+            $("#mySelect").append("<option value=''>없음</option>");
         });
 
 
@@ -393,6 +394,7 @@
                         for(i=0; i< res['result'].length ; i++){
                             $("#mySelect").append(res['result'][i]);
                         }
+                        $("#mySelect").append("<option value=''>없음</option>");
                     }
                 });
             }
@@ -408,6 +410,7 @@
                     for(i=0; i< res['result'].length ; i++){
                         $("#mySelect").append(res['result'][i]);
                     }
+                    $("#mySelect").append("<option value=''>없음</option>");
                 }
             });
         });
