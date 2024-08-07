@@ -647,10 +647,10 @@ class HomeController < ApplicationController
                     end
                     m2 = Array.new
                     m.each do |key,value|
-                        m2 << key + ' = "' + value.to_s + '"'
+                        m2 << key + ' = "' + value.to_s.split('"').join('') + '"'
                     end
 
-                    q = 'update CTOPORDER set '+m2.join(',')+' where _id = ' + db_id.to_s
+                    q = "update CTOPORDER set #{m2.join(',')} where _id = " + db_id.to_s
                     client.execute(q)
                 rescue => e
                     puts e
@@ -1921,7 +1921,7 @@ class HomeController < ApplicationController
                         m2 << key + ' = "' + value.to_s.split('"').join('"') + '"'
                     end
 
-                    q = 'update CTOPORDER set '+m2.join(',')+' where _id = ' + db_id.to_s
+                    q = "update CTOPORDER set #{m2.join(',')} where _id = " + db_id.to_s
                     client.execute(q)
                 rescue => e
                     puts e
