@@ -2137,7 +2137,7 @@ class HomeController < ApplicationController
         end
 
         q = "insert into PRODUCT(supType, comName, name1, name2, selName, proType, enbrandName, enName, brandName, procode, proName, counter, godocode, tel) values("+product.join(',')+")"
-        client.execute(q)
+        client.execute(q) 
         options.each do |key, v|
             op = v.map do |k|
                 "'"+k.to_s.split('"').join('').split("'").join('')+"'"
