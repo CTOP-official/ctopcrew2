@@ -126,6 +126,17 @@ class HomeController < ApplicationController
                         barcode = db_row[2]
                     end
                 else
+                    if code_value == "BSR"
+                      code_value = "KO-BEL-SERUM50"
+                    end
+                    for ccc22 in 2..6
+                      if code_value == "BSR-0"+ccc22.to_s
+                        code_value = "KO-BEL-SERUM50-0"+ccc22.to_s
+                      end
+                    end
+                    if code_value == "BSR-10"
+                      code_value = "KO-BEL-SERUM50-10"
+                    end
                     result2 = client.execute("SELECT * FROM CTOPOPTION2 where proId = '#{code_value}'")
                     result2.each do |db_row|
                         if db_row[4].include?('카쿠') or db_row[5].include?('카쿠') or db_row[2].to_s == '89343202002665' 
@@ -2203,9 +2214,9 @@ class HomeController < ApplicationController
           else
             if data2['비고2'].to_s == ''
                 if data2['소매주문번호'].to_s == ''
-                    client.execute("update CTOPORDER set deliNo = '#{data2['운송장번호'].to_s}', date4 = '#{Time.now.to_s.split(' ')[0]}' where _id = #{order_id.to_s}")
+                  client.execute("update CTOPORDER set deliNo = '#{data2['운송장번호'].to_s}', date4 = '#{Time.now.to_s.split(' ')[0]}' where _id = #{order_id.to_s}")
                 else
-                    client.execute("update CTOPORDER set deliNo = '#{data2['송장번호'].to_s}', code1 = '#{data2['도매주문번호'].to_s}', date4 = '#{Time.now.to_s.split(' ')[0]}' where _id = #{order_id.to_s}")
+                  client.execute("update CTOPORDER set deliNo = '#{data2['송장번호'].to_s}', code1 = '#{data2['도매주문번호'].to_s}', date4 = '#{Time.now.to_s.split(' ')[0]}' where _id = #{order_id.to_s}")
                 end
             else
                 client.execute("update CTOPORDER set bin2 = '#{data2['비고2'].to_s}' where _id = #{order_id.to_s}")
