@@ -1068,11 +1068,11 @@ class HomeController < ApplicationController
 
             opt_value = (opt_con.to_i * data2[14].to_i).to_s
 
-            if pro_where == '한국' or procode.to_s == 'DK888' or barcode.to_s == '89343202002665'
+            if pro_where == '한국' or procode.to_s == 'DK888' or barcode.to_s == '89343202002665' or ((opt+' '+opt2).include?('카쿠') and pro_where = '호주')
                 if opt_con22.to_s == '0' or pro_type == "상품권"
 
                 else
-                    if where3 == '한국' or ((where3 == '카쿠' and (opt+' '+opt2).include?('카쿠')) or  barcode.to_s == '89343202002665')
+                  if where3 == '한국' or ((where3 == '카쿠' and (opt+' '+opt2).include?('카쿠')) or  barcode.to_s == '89343202002665' or barcode.to_s.include?('카쿠'))
                         sheet1.row(index+1).push('')#0
                         sheet1.row(index+1).push(data2[4].to_s+'-'+data2[5].to_s)#1
                         sheet1.row(index+1).push('사입')
@@ -1570,8 +1570,8 @@ class HomeController < ApplicationController
                         end
                     end
                     con_value = opt_con.to_i * data2[14].to_i
-                    if pro_where == '한국' and where3 == '한국'
-                        if opt_code22.to_s == '0' or pro_type == '상품권' or (opt.to_s + opt2.to_s).include?('카쿠') or barcode.to_s == '89343202002665'
+                    if (pro_where == '한국' and where3 == '한국') or (pro_where == '호주' and (opt.to_s + opt2.to_s).include?('카쿠') and where3 == '한국')
+                      if opt_code22.to_s == '0' or pro_type == '상품권' or (opt.to_s + opt2.to_s).include?('카쿠') or barcode.to_s == '89343202002665' or barcode.to_s.include?('카쿠')
 
                         else
                             action_check = 1
@@ -1592,7 +1592,7 @@ class HomeController < ApplicationController
                             client.execute("update CTOPORDER set download1 = '#{time_text}', date3 = '#{time_text}' where _id = #{data2[0].to_s}")
                         end
                     else
-                        if (opt.to_s + opt2.to_s).include?('카쿠') or barcode.to_s == '89343202002665'
+                      if (opt.to_s + opt2.to_s).include?('카쿠') or barcode.to_s == '89343202002665' or barcode.to_s.include?('카쿠')
                             action_check = 1
                             sheet1.row(index+1).push(data2[10])
                             sheet1.row(index+1).push(data2[2])
