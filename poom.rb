@@ -13,7 +13,7 @@ class Soonje
 
     def main
         dbconnect()
-        excel = excel_get('data37.xlsx')
+        excel = excel_get('data20240814.xlsx')
         excel.column(1).each_with_index do |d, index|
             index2 = index + 1
             if index2 > 1
