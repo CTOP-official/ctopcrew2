@@ -186,7 +186,7 @@ class HomeController < ApplicationController
                         puts '품절'
                         answer = 'no'
                     else
-                        if procode == ''
+                        if procode != ''
                             m = Hash.new
                             m['date1'] = Time.now.to_s.split(' ')[0]
                             m['date2'] = td_list[26]
