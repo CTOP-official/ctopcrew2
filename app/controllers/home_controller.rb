@@ -173,79 +173,85 @@ class HomeController < ApplicationController
                     result = client.execute(qq)
                     current_counter = '100'
                     kaku_check = ''
+                    procode = ''
                     result.each do |db_data|
+                        procode = db_data[1]
                         current_counter = db_data[11].to_s
                         kaku_check = db_data[4].to_s + ' ' + db_data[5].to_s
                     end
+
+
 
                     if current_counter == '-50'
                         puts '품절'
                         answer = 'no'
                     else
-                        m = Hash.new
-                        m['date1'] = Time.now.to_s.split(' ')[0]
-                        m['date2'] = td_list[26]
-                        m['date3'] = ''
-                        m['name1'] = td_list[2].to_s.split('-')[0]
-                        m['market1'] = td_list[2].to_s.split('-')[1].to_s
-                        m['date4'] = ''
-                        m['deliNo'] = ''
-                        m['code1'] = ''
-                        m['unicode'] = td_list[9]
-                        m['code2'] = td_list[10]
-                        m['procode'] = td_list[1]
-                        m['barcode'] = td_list[0]
-                        m['con1'] = ''
-                        m['optcon'] = td_list[7]
-                        m['ordName'] = td_list[25]
-                        m['ordTel'] = td_list[19]
-                        m['getName'] = td_list[12]
-                        m['getTel'] = td_list[18]
-                        m['pnum'] = td_list[14]
-                        m['enum'] = td_list[15]
-                        m['home'] = td_list[16]
-                        m['messege'] = td_list[17]
-                        m['che1'] = ''
-                        m['moneyNum'] = ''
-                        m['money1'] = td_list[22]
-                        m['money2'] = td_list[23]
-                        m['money3'] = ''
-                        m['money4'] = ''
-                        m['moneyDate'] = ''
-                        m['money5'] = ''
-                        m['money6'] = ''
-                        if kaku_check.include?('카쿠') or td_list[0].to_s == '89343202002665'
-                            m['productName'] = td_list[21] + ' 카쿠'
-                        else
-                            m['productName'] = td_list[21]
-                        end
-                        begin
-                            api_result = money_api(m['pnum'], m['ordName'], m['ordTel'])
-                            if api_result == '1'
-                                m['api_result'] = '정상(주문자)'
-                            elsif api_result == '2'
-                                m['api_result'] = '정상(주문자휴대폰불일치)'
+                        if procode == ''
+                            m = Hash.new
+                            m['date1'] = Time.now.to_s.split(' ')[0]
+                            m['date2'] = td_list[26]
+                            m['date3'] = ''
+                            m['name1'] = td_list[2].to_s.split('-')[0]
+                            m['market1'] = td_list[2].to_s.split('-')[1].to_s
+                            m['date4'] = ''
+                            m['deliNo'] = ''
+                            m['code1'] = ''
+                            m['unicode'] = td_list[9]
+                            m['code2'] = td_list[10]
+                            m['procode'] = procode
+                            m['barcode'] = td_list[0]
+                            m['con1'] = ''
+                            m['optcon'] = td_list[7]
+                            m['ordName'] = td_list[25]
+                            m['ordTel'] = td_list[19]
+                            m['getName'] = td_list[12]
+                            m['getTel'] = td_list[18]
+                            m['pnum'] = td_list[14]
+                            m['enum'] = td_list[15]
+                            m['home'] = td_list[16]
+                            m['messege'] = td_list[17]
+                            m['che1'] = ''
+                            m['moneyNum'] = ''
+                            m['money1'] = td_list[22]
+                            m['money2'] = td_list[23]
+                            m['money3'] = ''
+                            m['money4'] = ''
+                            m['moneyDate'] = ''
+                            m['money5'] = ''
+                            m['money6'] = ''
+                            if kaku_check.include?('카쿠') or td_list[0].to_s == '89343202002665'
+                                m['productName'] = td_list[21] + ' 카쿠'
                             else
-                                api_result = money_api(m['pnum'], m['getName'], m['getTel'])
-                                if api_result == '1'
-                                    m['api_result'] = '정상(수령자)'
-                                elsif api_result == '2'
-                                    m['api_result'] = '정상(수령자휴대폰불일치)'
-                                else
-                                    m['api_result'] = '개통부오류'
-                                end
+                                m['productName'] = td_list[21]
                             end
-                        rescue => e
-                            m['api_result'] = 'api_error'
-                        end
+                            begin
+                                api_result = money_api(m['pnum'], m['ordName'], m['ordTel'])
+                                if api_result == '1'
+                                    m['api_result'] = '정상(주문자)'
+                                elsif api_result == '2'
+                                    m['api_result'] = '정상(주문자휴대폰불일치)'
+                                else
+                                    api_result = money_api(m['pnum'], m['getName'], m['getTel'])
+                                    if api_result == '1'
+                                        m['api_result'] = '정상(수령자)'
+                                    elsif api_result == '2'
+                                        m['api_result'] = '정상(수령자휴대폰불일치)'
+                                    else
+                                        m['api_result'] = '개통부오류'
+                                    end
+                                end
+                            rescue => e
+                                m['api_result'] = 'api_error'
+                            end
 
-                        m2 = m.values
-                        m2 = m2.map do |i|
-                            '"'+i.to_s+'"'
-                        end
+                            m2 = m.values
+                            m2 = m2.map do |i|
+                                '"'+i.to_s+'"'
+                            end
 
-                        q = 'insert into CTOPORDER('+m.keys.join(',')+') values('+m2.join(',')+')'
-                        client.execute(q)
+                            q = 'insert into CTOPORDER('+m.keys.join(',')+') values('+m2.join(',')+')'
+                            client.execute(q)
+                        end
                     end
                 end
             end
@@ -558,7 +564,7 @@ class HomeController < ApplicationController
         if where3.include?("B2B")
                 file_name << download_action_multi2("B2B", data, params['where2'].to_s, where3)
         else
-            ['CTOP','FC','UM','TP','VM','MDD','CNC','MP'].each do |company_name|
+            ['CTOP','FC','UM','TP','VM','MDD','CNC','MP', 'CR'].each do |company_name|
                 file_name << download_action_multi2(company_name, data, params['where2'].to_s, where3)
             end
         end
@@ -1929,7 +1935,7 @@ class HomeController < ApplicationController
                     m['bin3'] = data2[38]
                     m2 = Array.new
                     m.each do |key,value|
-                        m2 << key + ' = "' + value.to_s.split('"').join('"') + '"'
+                        m2 << key + ' = "' + value.to_s.split('"').join('') + '"'
                     end
 
                     q = "update CTOPORDER set #{m2.join(',')} where _id = " + db_id.to_s
