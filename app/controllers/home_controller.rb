@@ -536,7 +536,12 @@ class HomeController < ApplicationController
 	end
 
 	def download_action_all
-		data = params['data']
+		data = Array.new
+        sdate = params['sdate'].to_s
+        edate = params['edate'].to_s
+        client = ActiveRecord::Base.connection
+        data = client.execute("select * from CTOPORDER where date1 >= '#{sdate}' and date1 <= '#{edate}'")
+
 		time_dd = Time.now.to_s.split(' ')[0].split('-').join('')
 		dir_name = './public/excel/'+time_dd
 
@@ -908,6 +913,8 @@ class HomeController < ApplicationController
         client = ActiveRecord::Base.connection
         book = Spreadsheet::Workbook.new
         sheet1 = book.create_worksheet
+        sdate = params['sdate'].to_s
+        edate = params['edate'].to_s
         index = 0
         today = Time.now.to_s.split(' ')[0]
         data = Array.new
@@ -1195,11 +1202,7 @@ class HomeController < ApplicationController
 		  	sheet1.row(0).push(col_name)
 		end
 
-		data.each_with_index do |i,index2|
-			data2 = Array.new
-			i.split('<td')[1..-1].each do |k|
-			  	data2 << k.split('</td>')[0].split('>')[1]
-			end
+		data.each_with_index do |data2,index2|
 			if data2[34].to_s.split(' ').join('') == '' or where2 == '강제다운로드'
 				if data2[4].to_s == company_name
 					barcode = data2[12]
@@ -1669,7 +1672,15 @@ class HomeController < ApplicationController
         end
 
 	def download_action9
-		data = params['data']
+		data = Array.new
+        sdate = params['sdate'].to_s
+        edate = params['edate'].to_s
+        client = ActiveRecord::Base.connection
+        result = client.execute('select * from CTOPORDER where date1 <= "'+sdate+'" and date1 >= "'+edate+'"')
+        result.each do |i|
+            data << i
+        end
+
 		time_dd = Time.now.to_s.split(' ')[0].split('-').join('')
 		dir_name = './public/excel/'+time_dd
 		if Dir.exist?(dir_name)
@@ -1772,11 +1783,7 @@ class HomeController < ApplicationController
 		    worksheet.change_row_height(3, 150)
             action_check = 0
 		    index = 4
-		    data.each_with_index do |i,index2|
-			    data2 = Array.new
-			    i.split('<td')[1..-1].each do |k|
-				    data2 << k.split('</td>')[0].split('>')[1]
-			    end
+		    data.each_with_index do |data2,index2|
 			    if data2[35].to_s.split(' ').join('') == '' or where2 == '강제다운로드'
 				    if data2[4].to_s == company
 					    barcode = data2[12].split(' ').join('')
@@ -2074,6 +2081,10 @@ class HomeController < ApplicationController
         @data = Array.new
         client = ActiveRecord::Base.connection
         @time = params['date'].to_s
+        @page = params['page'].to_s
+        if @page.to_s == ''
+            @page = '1'
+        end
         @date_option = params['date_option'].to_s
         if @date_option == ''
             @date_option = '작성일'
@@ -2114,7 +2125,19 @@ class HomeController < ApplicationController
         # @time = '2024-02-28'
         # @time2 = '2024-02-28'
         @search_text = params['search_text'].to_s
-        @data = client.execute("select DISTINCT c._id, c.date1, c.date2, c.date3, c.name1, c.market1, c.date4, CASE WHEN i.curCon IS NULL OR i.curCon = '0' THEN '품절' ELSE c.deliNo END AS deliNo, c.code1, c.unicode, c.code2, c.procode, c.barcode, c.con1, c.optcon, c.ordName, c.ordTel, c.getName, c.getTel, c.pnum, c.enum, c.home, c.messege, c.che1, c.moneyNum, c.money1, c.money2, c.money3, c.money4, c.moneyDate, c.money5, c.money6, c.productName, c.api_result, c.download1, c.download2, c.bin1, c.bin2, c.bin3 from CTOPORDER c LEFT JOIN CTOPOPTION2 i ON c.barcode = i.barcode where c.#{@date_option_name_dict[@date_option]} >= '#{@time}' and c.#{@date_option_name_dict[@date_option]} <= '#{@time2}' and c.#{@select2_name_dict[@date_option2]} like '%#{@search_text}%' ORDER BY _id ASC")
+        @data77 = client.execute("select DISTINCT c._id, c.date1, c.date2, c.date3, c.name1, c.market1, c.date4, CASE WHEN i.curCon IS NULL OR i.curCon = '0' THEN '품절' ELSE c.deliNo END AS deliNo, c.code1, c.unicode, c.code2, c.procode, c.barcode, c.con1, c.optcon, c.ordName, c.ordTel, c.getName, c.getTel, c.pnum, c.enum, c.home, c.messege, c.che1, c.moneyNum, c.money1, c.money2, c.money3, c.money4, c.moneyDate, c.money5, c.money6, c.productName, c.api_result, c.download1, c.download2, c.bin1, c.bin2, c.bin3 from CTOPORDER c LEFT JOIN CTOPOPTION2 i ON c.barcode = i.barcode where c.#{@date_option_name_dict[@date_option]} >= '#{@time}' and c.#{@date_option_name_dict[@date_option]} <= '#{@time2}' and c.#{@select2_name_dict[@date_option2]} like '%#{@search_text}%' ORDER BY _id ASC")
+        @data = Array.new
+        @data77.each do |ddd|
+            @data << ddd
+        end
+        @page_length = @data.length/100 + 1
+        @data_length = @data.length
+        if @page.to_i == 1
+            @data = @data[0..99]
+        else
+            @data = @data[(@page.to_i*100-100)..((@page.to_i*100)-1)]
+        end
+        @current_url = request.url
         # result.each do |i|
         #     barcode = i[12].to_s
         #     cc = i
@@ -2247,7 +2270,14 @@ class HomeController < ApplicationController
 		    column_name << '발신휴대폰업체'
 		    column_name << '문자내용'
 
-		    data = params['data']
+		    data = Array.new
+            sdate = params['sdate'].to_s
+            edate = params['edate'].to_s
+            result = client.execute('select * from CTOPORDER where date1 >= "'+sdate+'" and date1 <= "'+edate+'"')
+            result.each do |i|
+                data << i
+            end
+
 		    book = Spreadsheet::Workbook.new
 		    sheet1 = book.create_worksheet
 		    index = 0
@@ -2265,11 +2295,7 @@ class HomeController < ApplicationController
 		    moonja_text['CNC'] = "안녕하십니까, 고객님.\n주문정보에 기입된 통관고유부호를 조회해 보니 오류로 확인되어 안내해 드립니다.\n수취인 명의의 통관고유부호와 전화번호를  재확인 후 회신주시면 처리 진행해 드리겠습니다.\n감사합니다."
 		    moonja_text['CTOP-FC-TP-VM'] = "안녕하세요, 고객님\n통관번호가 수취인과 일치하지 않아 연락드렸습니다.\n확인 후 회신으로 통관번호와 수취인명의 전화번호, 수취인명을 남겨주시면 감사하겠습니다.\n감사합니다. :)"
 		    moonja_text['UM-MDD'] = "고객님~안녕하세요!\n통관번호 오류로 확인되어 안내드립니다.\n통관번호와 고객님 성함 및 전화번호가 일치하지 않아, 확인 후 답변 부탁드립니다.\n감사합니다. ^^"
-		    data.each_with_index do |i,index2|
-                data2 = Array.new
-                i.split('<td')[1..-1].each do |k|
-                        data2 << k.split('</td>')[0].to_s.split('>')[1].to_s
-                end
+		    data.each_with_index do |data2,index2|
                 if data2[33].to_s == '개통부오류'
                     result = client.execute('select name1 from PRODUCT where procode = "'+data2[11].to_s+'"')
                     country_check = ''

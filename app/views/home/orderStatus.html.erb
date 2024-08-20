@@ -57,7 +57,9 @@
         </div>
         <form method="GET" action="/orderStatus">
             <div class="row">
-                    <div class="col-1 m-2"></div>
+                    <div class="col-1 m-2 bottom-text-container">
+                        
+                    </div>
 
                     <select class="form-control col m-2" id="" name="date_option">
                         <option value="작성일" <%= @select_default['작성일'].to_s %>>작성일</option>
@@ -155,7 +157,45 @@
                 </tbody>
             </table>
         </div>
-        <div>상품수 : <%= @data.size %></div>
+
+        <div class="row">
+            <div class="col-4">
+                <div class="ms-2">상품수 : <%= @data_length %></div>
+            </div>
+            <div class="col-4 text-center justify-content-between">
+                <nav>
+                    <ul class="pagination mb-0 d-inline-flex">
+                        <li class="page-item">
+                            <a class="page-link" href="<%= @current_url.split('&page='+@page.to_s).join('')+'&page=1'%>" tabindex="-1"><span aria-hidden="true">&laquo;</span></a>
+                        <li>
+                        <% for nn in (@page.to_i - 4)..(@page.to_i - 1) %>
+                            <% if nn  > 0 %>
+                                <li class="page-item">
+                                    <a class="page-link" href="<%= @current_url.split('&page='+@page.to_s).join('')+'&page='+nn.to_s %>"><%= nn %></a>
+                                </li>
+                            <% end %>
+                        <% end %>
+                        <li class="page-item active">
+                            <a class="page-link" href="#"><%= @page %></a>
+                        </li>
+                        <% for nn in (@page.to_i+1)..(@page.to_i + 4) %>
+                            <% if nn  <= @page_length %>
+                                <li class="page-item">
+                                    <a class="page-link" href="<%= @current_url.split('&page='+@page.to_s).join('')+'&page='+nn.to_s %>"><%= nn %></a>
+                                <li>
+                            <% end %>
+                        <% end %>
+                        <li class="page-item">
+                            <a class="page-link" href="<%= @current_url.split('&page='+@page.to_s).join('')+'&page='+@page_length.to_s%>" tabindex="-1"><span aria-hidden="true">&raquo;</span></a>
+                        <li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="col-4">
+                
+            </div>
+        </div>
     </div>
 </div>
 
@@ -211,22 +251,22 @@
             var table33 = document.getElementById('datatablesSimple');
             const totalRowCnt = table33.rows.length;
             var selectedRows = [];
-            for(i=1;i<totalRowCnt;i++){
-                selectedRows.push(table33.rows[i].innerHTML);
-            }
+            
             if($("#where_select").val() == 'ALL'){
-                  $.ajax({
-                      url: '/download_action9',
-                      method: 'POST',
-                      data: {'data' : selectedRows, 'where' : $("#where_select").val()  , 'where2' : $("#where_select2").val(), 'where3' : $("#where_select3").val()},
-                      success: function(res){
-                          if(res['result'] == 'ok'){
-                              window.open(res['answer'], '_blank');
-                          }else{
-                              alert($("#where_select").val()+'실패');
-                          }
-                      }
-                  });
+                $.ajax({
+                    url: '/download_action9',
+                    method: 'POST',
+                    data: {'data' : selectedRows, 'where' : $("#where_select").val()  , 'where2' : $("#where_select2").val(), 'where3' : $("#where_select3").val(),
+                            'sdate' : $("#litepickerRangePlugin").val(),
+                            'edate' : $("#litepickerRangePlugin2").val()},
+                    success: function(res){
+                        if(res['result'] == 'ok'){
+                            window.open(res['answer'], '_blank');
+                        }else{
+                            alert($("#where_select").val()+'실패');
+                        }
+                    }
+                });
             }else{
                 $.ajax({
                     url: '/download_action8',
@@ -247,9 +287,7 @@
             var table33 = document.getElementById('datatablesSimple');
             const totalRowCnt = table33.rows.length;
             var selectedRows = [];
-            for(i=1;i<totalRowCnt;i++){
-                selectedRows.push(table33.rows[i].innerHTML);
-            }
+            
 
             if($("#where_select").val() == "ALL"){
                 $.ajax({
@@ -258,7 +296,9 @@
                     data: {
                         'data': selectedRows,
                         'where2': $("#where_select2").val(),
-                        'where3': $("#where_select3").val()
+                        'where3': $("#where_select3").val(),
+                        'sdate' : $("#litepickerRangePlugin").val(),
+                        'edate' : $("#litepickerRangePlugin2").val()
                     },
                     success: function (res) {
                         if (res['result'] == 'ok') {
@@ -293,13 +333,12 @@
             var table33 = document.getElementById('datatablesSimple');
             const totalRowCnt = table33.rows.length;
             var selectedRows = [];
-            for(i=1;i<totalRowCnt;i++){
-                selectedRows.push(table33.rows[i].innerHTML);
-            }
             $.ajax({
                 url: '/moonja_download',
                 method: 'POST',
-                data: {'data' : selectedRows, 'where' :  $("#where_select").val(), 'where2' : $("#where_select2").val(), 'where3' : $("where_select3").val()},
+                data: {'data' : selectedRows, 'where' :  $("#where_select").val(), 'where2' : $("#where_select2").val(), 'where3' : $("where_select3").val(),
+                        'sdate' : $("#litepickerRangePlugin").val(),
+                        'edate' : $("#litepickerRangePlugin2").val()},
                 success: function(res){
                     if(res['result'] == 'ok'){
                         window.open(res['answer'], '_blank');
@@ -356,9 +395,6 @@
             var table33 = document.getElementById('datatablesSimple');
             const totalRowCnt = table33.rows.length;
             var selectedRows = [];
-            for(i=1;i<totalRowCnt;i++){
-                selectedRows.push(table33.rows[i].innerHTML);
-            }
             $.ajax({
                 url: '/total_download2',
                 method: 'POST',
