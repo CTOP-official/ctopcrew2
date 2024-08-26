@@ -709,6 +709,11 @@ class HomeController < ApplicationController
     def total_download333
         client = ActiveRecord::Base.connection
         data = params['data']
+
+        sdate = params['sdate'].to_s
+        edate = params['edate'].to_s
+        data = client.execute("select * from CTOPORDER where date1 >= '#{sdate}' and date1 <= '#{edate}'")
+        
         dir_name2 = './public/excel/'+Time.now.to_i.to_s+'(기존양식).xls'
         book = Spreadsheet::Workbook.new
         sheet1 = book.create_worksheet
@@ -775,11 +780,7 @@ class HomeController < ApplicationController
             sheet1.row(0).push(col_name)
         end
 
-        data.each_with_index do |i,index2|
-            data2 = Array.new
-			i.split('<td')[1..-1].each do |k|
-			  	data2 << k.split('</td>')[0].split('>')[1]
-			end
+        data.each_with_index do |data2,index2|
 
             barcode = data2[12].to_s.split(' ').join('')
             procode = data2[11].to_s.split(' ').join('')

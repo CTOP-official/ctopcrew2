@@ -380,7 +380,9 @@
             $.ajax({
                 url: '/total_download333',
                 method: 'POST',
-                data: {'data' : selectedRows},
+                data: {'data' : selectedRows,
+                    'sdate' : $("#litepickerRangePlugin").val(),
+                    'edate' : $("#litepickerRangePlugin2").val()},
                 success: function(res){
                     if(res['result'] == 'ok'){
                         window.open(res['answer'], '_blank');
