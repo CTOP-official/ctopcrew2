@@ -1021,11 +1021,7 @@ class HomeController < ApplicationController
             sheet1.row(0).push(col_name)
         end
 
-        data.each_with_index do |i,index2|
-            data2 = Array.new
-			i.split('<td')[1..-1].each do |k|
-			  	data2 << k.split('</td>')[0].split('>')[1]
-			end
+        data.each_with_index do |data2,index2|
 
             barcode = data2[12].to_s.split(' ').join('')
             procode = data2[11].to_s.split(' ').join('')
@@ -1344,11 +1340,7 @@ class HomeController < ApplicationController
 
             index = 1
 
-            data.each_with_index do |i,index2|
-                data2 = Array.new
-                i.split('<td')[1..-1].each do |k|
-                    data2 << k.split('</td>')[0].split('>')[1]
-                end
+            data.each_with_index do |data2,index2|
 
                 if data2[34].to_s.split(' ').join('') == '' or where2 == '강제다운로드'
                     barcode = data2[12]
@@ -1518,11 +1510,7 @@ class HomeController < ApplicationController
 			sheet1.row(0).push(col_name)
 		end
 
-		data.each_with_index do |i,index2|
-		  data2 = Array.new
-		  i.split('<td')[1..-1].each do |k|
-			data2 << k.split('</td>')[0].split('>')[1]
-		  end
+		data.each_with_index do |data2,index2|
           if data2[11].to_s.include?('하동')
 
           else
