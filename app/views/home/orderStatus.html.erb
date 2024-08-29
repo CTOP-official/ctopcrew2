@@ -39,6 +39,7 @@
                 <option value="카쿠">카쿠</option>
                 <option value="B2B해외">B2B해외</option>
                 <option value="B2B국내">B2B국내</option>
+                <option value="다운로드1">다운로드1</option>
             </select>
 
             <select class="form-control col m-2" id="where_select">
@@ -57,38 +58,38 @@
         </div>
         <form method="GET" action="/orderStatus">
             <div class="row">
-                    <div class="col-1 m-2 bottom-text-container">
-                        
-                    </div>
+                <div class="col-1 m-2 bottom-text-container">
+                    
+                </div>
 
-                    <select class="form-control col m-2" id="" name="date_option">
-                        <option value="작성일" <%= @select_default['작성일'].to_s %>>작성일</option>
-                        <option value="주문일" <%= @select_default['주문일'].to_s %>>주문일</option>
-                        <option value="발주일" <%= @select_default['발주일'].to_s %>>발주일</option>
-                        <option value="출고일" <%= @select_default['출고일'].to_s %>>출고일</option>
-                    </select>
+                <select class="form-control col m-2" id="" name="date_option">
+                    <option value="작성일" <%= @select_default['작성일'].to_s %>>작성일</option>
+                    <option value="주문일" <%= @select_default['주문일'].to_s %>>주문일</option>
+                    <option value="발주일" <%= @select_default['발주일'].to_s %>>발주일</option>
+                    <option value="출고일" <%= @select_default['출고일'].to_s %>>출고일</option>
+                </select>
 
-                    <div class="input-group input-group-joined col m-2">
-                        <span class="input-group-text">
-                            <i data-feather="calendar"></i>
-                        </span>
-                        <input class="form-control ps-0" id="litepickerRangePlugin" placeholder="Select date range..." name="date" value="<%= @time%>" />
-                    </div>
+                <div class="input-group input-group-joined col m-2">
+                    <span class="input-group-text">
+                        <i data-feather="calendar"></i>
+                    </span>
+                    <input class="form-control ps-0" id="litepickerRangePlugin" placeholder="Select date range..." name="date" value="<%= @time%>" />
+                </div>
 
-                    <div class="input-group input-group-joined col m-2">
-                        <span class="input-group-text">
-                            <i data-feather="calendar"></i>
-                        </span>
-                        <input class="form-control ps-0" id="litepickerRangePlugin2" placeholder="Select date range..." name="date2" value="<%= @time2%>" />
-                    </div>
+                <div class="input-group input-group-joined col m-2">
+                    <span class="input-group-text">
+                        <i data-feather="calendar"></i>
+                    </span>
+                    <input class="form-control ps-0" id="litepickerRangePlugin2" placeholder="Select date range..." name="date2" value="<%= @time2%>" />
+                </div>
 
-                    <select class="form-control col m-2" id="exampleFormControlSelect1" name="option2">
-                        <% @select2.each do |i| %>
-                            <option value="<%= i %>" <%= @select_default2[i] %>><%= i %></option>
-                        <% end %>
-                    </select>
+                <select class="form-control col m-2" id="exampleFormControlSelect1" name="option2">
+                    <% @select2.each do |i| %>
+                        <option value="<%= i %>" <%= @select_default2[i] %>><%= i %></option>
+                    <% end %>
+                </select>
 
-                    <input class="form-control col m-2" id="exampleFormControlInput1" type="text" placeholder="" name="search_text" value="<%= @search_text %>">
+                <input class="form-control col m-2" id="exampleFormControlInput1" type="text" placeholder="" name="search_text" value="<%= @search_text %>">
 
                 <button type="submit" class="btn btn-primary col m-2" id="search1">검색</button>
             </div>
@@ -288,44 +289,57 @@
             const totalRowCnt = table33.rows.length;
             var selectedRows = [];
             
-
-            if($("#where_select").val() == "ALL"){
+            if($("#where_select3").val() == "다운로드1"){
                 $.ajax({
-                    url: '/download_action_all',
+                    url: '/download_action_all77',
                     method: 'POST',
                     data: {
-                        'data': selectedRows,
-                        'where2': $("#where_select2").val(),
-                        'where3': $("#where_select3").val(),
                         'sdate' : $("#litepickerRangePlugin").val(),
                         'edate' : $("#litepickerRangePlugin2").val()
                     },
-                    success: function (res) {
-                        if (res['result'] == 'ok') {
-                            window.open(res['answer'], '_blank');
-                        } else {
-                            alert($("#where_select").val() + '실패');
-                        }
-                    }
-                })
-            }else {
-                $.ajax({
-                    url: '/download_action7',
-                    method: 'POST',
-                    data: {
-                        'data': selectedRows,
-                        'where': $("#where_select").val(),
-                        'where2': $("#where_select2").val(),
-                        'where3': $("where_select3").val()
-                    },
-                    success: function (res) {
-                        if (res['result'] == 'ok') {
-                            window.open(res['answer'], '_blank');
-                        } else {
-                            alert($("#where_select").val() + '실패');
-                        }
+                    success: function (res){
+                        window.open(res['answer'], '_blank');
                     }
                 });
+            }else{
+                if($("#where_select").val() == "ALL"){
+                    $.ajax({
+                        url: '/download_action_all',
+                        method: 'POST',
+                        data: {
+                            'data': selectedRows,
+                            'where2': $("#where_select2").val(),
+                            'where3': $("#where_select3").val(),
+                            'sdate' : $("#litepickerRangePlugin").val(),
+                            'edate' : $("#litepickerRangePlugin2").val()
+                        },
+                        success: function (res) {
+                            if (res['result'] == 'ok') {
+                                window.open(res['answer'], '_blank');
+                            } else {
+                                alert($("#where_select").val() + '실패');
+                            }
+                        }
+                    })
+                }else {
+                    $.ajax({
+                        url: '/download_action7',
+                        method: 'POST',
+                        data: {
+                            'data': selectedRows,
+                            'where': $("#where_select").val(),
+                            'where2': $("#where_select2").val(),
+                            'where3': $("where_select3").val()
+                        },
+                        success: function (res) {
+                            if (res['result'] == 'ok') {
+                                window.open(res['answer'], '_blank');
+                            } else {
+                                alert($("#where_select").val() + '실패');
+                            }
+                        }
+                    });
+                }
             }
         });
 

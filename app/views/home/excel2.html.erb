@@ -1,0 +1,106 @@
+<div class="card mb-4 card-header-actions">
+    <div class="card-header">
+        <h1>excel</h1>
+    </div>
+
+    <div class="card-body">
+        <button type="button" class="btn btn-primary mb-3" id="button1">저장</button>
+        <div class="row">
+            <div class="col-4">
+                <select class="form-select" size="20" id="select1">
+                    <% @header.each do |name| %>
+                        <% if @excel6[0].include?(name) %>
+
+                        <% else %>
+                            <option><%= name %></option>
+                        <% end %>
+                    <% end %>
+                </select>
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-green mb-3 mt-5" id="add_button2">공백<br>추가</button>
+                <button type="button" class="btn btn-primary mb-3" id="add_button1">추가</button>
+                <button type="button" class="btn btn-danger" id="delete_button1">제거</button>
+            </div>
+            <div class="col-7">
+                <table class="" width="100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>가저올데이터</th>
+                            <th>엑셀해더이름</th>
+                            <th>button</th>
+                            <th>button</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tbody1">
+                        <% @excel6[0].each do |i| %>
+                            <tr>
+                                <th><input type="checkbox" class="form-check-input"></th>
+                                <td><%= i[1] %></td>
+                                <td><input type="text" class="form-control" value="<%= i[2] %>"></td>
+                                <td><button type="button" class="btn btn-primary soonje_up_button">올리기</td>
+                                <td><button type="button" class="btn btn-danger soonje_down_button">내리기</button></td>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $("#button1").click(function(){
+            data2 = [];
+            trs = $("#tbody1").children();
+            trs.each(function(i){
+                tds = trs.eq(i).children();
+                data2.push([tds.eq(1).text(), tds.eq(2).children().eq(0).val(), i])
+            });
+            console.log(data2)
+            $.ajax({
+                url: '/excel_save777',
+                method: 'POST',
+                data: {'data' : data2},
+                success: function(res){
+                    alert("저장성공");
+                }
+            });
+        });
+
+        $("body").on('click', '.soonje_up_button', function(){
+            row = $(this).closest('tr');
+            row.prev().before(row);
+        });
+
+        $("body").on('click', '.soonje_down_button', function(){
+            row = $(this).closest('tr');
+            row.next().after(row);
+        });
+
+        $("#add_button1").click(function(){
+            var newRow = '<tr><th><input type="checkbox" class="form-check-input"></th><td>'+$("#select1 option:selected").text()+'</td><td><input type="text" class="form-control"></td><td><button type="button" class="btn btn-primary soonje_up_button">올리기</td><td><button type="button" class="btn btn-danger soonje_down_button">내리기</button></td></tr>';
+            $("#tbody1").append(newRow);
+            $("#select1 option:selected").remove();
+        });
+
+        $("#add_button2").click(function(){
+            var newRow = '<tr><th><input type="checkbox" class="form-check-input"></th><td></td><td><input type="text" class="form-control"></td><td><button type="button" class="btn btn-primary soonje_up_button">올리기</td><td><button type="button" class="btn btn-danger soonje_down_button">내리기</button></td></tr>';
+            $("#tbody1").append(newRow);
+        });
+
+        $("#delete_button1").click(function(){
+            trs = $("#tbody1").children();
+            trs.each(function(i){
+                tds = trs.eq(i).children();
+                if(tds.eq(0).children().eq(0).is(':checked')){
+                    trs.eq(i).remove();
+                    $("#select1").append("<option>"+trs.eq(i).children().eq(1).text()+"</option>");
+                };
+            });
+        });
+    });
+</script>

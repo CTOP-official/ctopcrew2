@@ -603,6 +603,206 @@ class HomeController < ApplicationController
 		render :json => {'result' => 'ok' , 'answer' => dir_name2.split('./public')[1]}
 	end
 
+    def download_action_all77
+        @header = Array.new
+        @header[0] = 'ID'
+        @header[1] = '작성일'
+        @header[2] = '주문일'
+        @header[3] = '발주일'
+        @header[4] = '업체명'
+        @header[5] = '마켓명'
+        @header[6] = '출고일'
+        @header[7] = '송장번호'
+        @header[8] = '도매주문번호'
+        @header[9] = '비잼번호'
+        @header[10] = '소매주문번호'
+        @header[11] = '상품코드'
+        @header[12] = '바코드'
+        @header[13] = '수량'
+        @header[14] = '마켓주문수량'
+        @header[15] = '주문자명'
+        @header[16] = '주문자핸드폰번호'
+        @header[17] = '수령자명'
+        @header[18] = '수취인핸드폰번호'
+        @header[19] = '개통부'
+        @header[20] = '우편번호'
+        @header[21] = '주소'
+        @header[22] = '배송메세지'
+        @header[23] = '회수여부'
+        @header[24] = '입금계좌'
+        @header[25] = '판매가'
+        @header[26] = '배송비'
+        @header[27] = '수수료'
+        @header[28] = '정산금액'
+        @header[29] = '정산확정일'
+        @header[30] = '원가'
+        @header[31] = '배송비2'
+        @header[32] = '상품명'
+        @header[33] = '통관번호현황'
+        @header[34] = '다운로드1'
+        @header[35] = '다운로드2'
+        @header[36] = '비고1'
+        @header[37] = '비고2'
+        @header[38] = '비고3'
+
+        @header2 = Hash.new
+        @header.each_with_index do |i, index|
+            @header2[i] = index
+        end
+
+        sdate = params['sdate'].to_s
+        edate = params['edate'].to_s
+        client = ActiveRecord::Base.connection
+        data = client.execute("select * from CTOPORDER where date1 >= '#{sdate}' and date1 <= '#{edate}'")
+
+		time_dd = Time.now.to_s.split(' ')[0].split('-').join('')
+		dir_name = './public/excel/'+time_dd
+
+        if Dir.exist?(dir_name)
+            file_list = Dir.entries(dir_name)
+            file_list.each do |file|
+                if file == '.' or file == '..'
+
+                else
+                    File.open(dir_name+'/'+file, 'r') do |f|
+                        File.delete(f)
+                    end
+                end
+            end
+			Dir.delete(dir_name)
+		end
+		begin
+			Dir.mkdir(dir_name)
+		rescue
+
+		end
+
+        book = Spreadsheet::Workbook.new
+        sheet1 = book.create_worksheet
+
+        data33 = client.execute("select * from excel6 where excel5id = 1")
+
+        data33.each do |col_name|
+            sheet1.row(0).push(col_name[2])
+        end
+
+        index = 1
+        data.each do |i|
+            data33.each do |data44|
+                if data44[1].to_s == ''
+                    sheet1.row(index).push('')
+                else
+                    sheet1.row(index).push(i[@header2[data44[1]].to_i])
+                end
+            end
+            index += 1
+        end
+
+        time_dd = Time.now.to_s.split(' ')[0].split('-').join('')
+        path = './public/excel/'+time_dd+'/'+time_dd+'-다운로드1.xls'
+        book.write path
+        file_name = Array.new
+        file_name << path
+
+        dir_name2 = dir_name+'다운로드1.zip'
+        begin
+            File.open(dir_name2, 'r') do |f|
+                File.delete(f)
+            end
+        rescue
+
+        end
+		Zip::File.open(dir_name2, Zip::File::CREATE) do |zipfile|
+			file_name.each do |file|
+                begin
+				    zipfile.add(File.basename(file), file)
+                rescue => e
+                    puts '압축도중에러...'
+                    puts e
+                end
+			end
+		end
+
+		render :json => {'result' => 'ok' , 'answer' => dir_name2.split('./public')[1]}
+    end
+
+    def excel2
+        client = ActiveRecord::Base.connection
+        result = client.execute('select * from excel')
+        @data = Array.new
+        result.each do |i|
+            @data << i
+        end
+
+        @header = Array.new
+        @header[0] = 'ID'
+        @header[1] = '작성일'
+        @header[2] = '주문일'
+        @header[3] = '발주일'
+        @header[4] = '업체명'
+        @header[5] = '마켓명'
+        @header[6] = '출고일'
+        @header[7] = '송장번호'
+        @header[8] = '도매주문번호'
+        @header[9] = '비잼번호'
+        @header[10] = '소매주문번호'
+        @header[11] = '상품코드'
+        @header[12] = '바코드'
+        @header[13] = '수량'
+        @header[14] = '마켓주문수량'
+        @header[15] = '주문자명'
+        @header[16] = '주문자핸드폰번호'
+        @header[17] = '수령자명'
+        @header[18] = '수취인핸드폰번호'
+        @header[19] = '개통부'
+        @header[20] = '우편번호'
+        @header[21] = '주소'
+        @header[22] = '배송메세지'
+        @header[23] = '회수여부'
+        @header[24] = '입금계좌'
+        @header[25] = '판매가'
+        @header[26] = '배송비'
+        @header[27] = '수수료'
+        @header[28] = '정산금액'
+        @header[29] = '정산확정일'
+        @header[30] = '원가'
+        @header[31] = '배송비2'
+        @header[32] = '상품명'
+        @header[33] = '통관번호현황'
+        @header[34] = '다운로드1'
+        @header[35] = '다운로드2'
+        @header[36] = '비고1'
+        @header[37] = '비고2'
+        @header[38] = '비고3'
+
+        @header2 = Hash.new
+        @header.each_with_index do |i, index|
+            @header2[i] = index
+        end
+
+        @excel5 = client.execute("select * from excel5")
+        @excel6 = Array.new
+        @excel5.each do |i|
+            memory = Array.new
+            result2 = client.execute('select * from excel6 where _id + '+i[0].to_s)
+            result2.each do |j|
+                memory << j
+            end
+            @excel6 << memory
+        end
+    end
+
+    def excel_save777
+        client = ActiveRecord::Base.connection
+        datas = params['data']
+        client.execute("delete from excel6")
+        datas.each do |key, i|
+            client.execute("insert into excel6(dataname, headname, soon, excel5id) values('#{i[0]}', '#{i[1]}', #{i[2]}, 1)")
+        end
+
+        render :json => {'result' => 'ok'}
+    end
+
     def edit_action2
         begin
             client = ActiveRecord::Base.connection
@@ -781,7 +981,6 @@ class HomeController < ApplicationController
         end
 
         data.each_with_index do |data2,index2|
-
             barcode = data2[12].to_s.split(' ').join('')
             procode = data2[11].to_s.split(' ').join('')
             godocode = ''
@@ -1342,7 +1541,6 @@ class HomeController < ApplicationController
             index = 1
 
             data.each_with_index do |data2,index2|
-
                 if data2[34].to_s.split(' ').join('') == '' or where2 == '강제다운로드'
                     barcode = data2[12]
                     procode = data2[11]
@@ -1691,7 +1889,7 @@ class HomeController < ApplicationController
 
         end
 	  	file_name = Array.new
-	  	['CTOP','FC','UM','TP','VM','MDD','MP'].each do |company_name|
+	  	['CTOP','FC','UM','TP','VM','MDD','MP','CR'].each do |company_name|
 		  	file_name << download_action_multi(company_name, data, params['where2'].to_s)
 		end
 		dir_name2 = dir_name+'.zip'
@@ -1725,7 +1923,8 @@ class HomeController < ApplicationController
 			    'TP' => '트랜드피커',
 			    'VM' => '비타민멘토',
 			    'MDD' => '더담담',
-                'MP' => '몬스터프라이스'
+                'MP' => '몬스터프라이스',
+                'CR' => '크리엣랩'
 		    }
 
 		    soonje_data = {
@@ -1735,7 +1934,8 @@ class HomeController < ApplicationController
 			    'TP' => ['20230005269','트렌드피커','최민준','010-2613-1454','2262','서울특별시 중랑구 신내역로 165(신내동, 신내 데시앙포레) 221동 902호'],
 			    'VM' => ['20230005264','비타민멘토','최민준','010-2275-6190','02055','서울특별시 중랑구 신내역로 165(신내동, 신내우디안아파트) 221동 902호'],
 			    'MDD' => ['20230002905','더담담','김잔디','010-6890-0221','4794','서울특별시 성동구 아차산로 113(성수동2가, 삼진빌딩) 1동 8층 8243호'],
-                'MP' => ['2024001000180364','몬스터 프라이스(MONSTER PRICE)','최민준','010-4835-6190','21378','인천광역시 부평구 원적로472번길 2, 4층 401호']
+                'MP' => ['2024001000180364','몬스터 프라이스(MONSTER PRICE)','최민준','010-4835-6190','21378','인천광역시 부평구 원적로472번길 2, 4층 401호'],
+                'CR' => ['20240005174','크리에잇랩(Cre8 LAB)','김잔디','010-2377-6190','07256','서울특별시 영등포구 국회대로28길 17(당산동3가) 4층 c148호(당산ㄴ동3가, 한얼빌딩)']
 		    }
 
 		    client = ActiveRecord::Base.connection
