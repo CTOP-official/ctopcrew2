@@ -39,6 +39,9 @@ Rails.application.routes.draw do
   post '/optionEditAction' => 'home#optionEditAction'
   get '/product_add' => 'home#product_add'
   post '/product_add_action' => 'home#product_add_action'
+  get '/excel' => 'home#excel2'
+  post '/excel_save777' => 'home#excel_save777'
+  post '/download_action_all77' => 'home#download_action_all77'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
