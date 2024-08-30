@@ -680,7 +680,7 @@ class HomeController < ApplicationController
         book = Spreadsheet::Workbook.new
         sheet1 = book.create_worksheet
 
-        data33 = client.execute("select * from excel6 where excel5id = 1")
+        data33 = client.execute("select * from excel6 where excel5id = " + params['where77'][-1])
 
         data33.each do |col_name|
             sheet1.row(0).push(col_name[2])
@@ -699,12 +699,12 @@ class HomeController < ApplicationController
         end
 
         time_dd = Time.now.to_s.split(' ')[0].split('-').join('')
-        path = './public/excel/'+time_dd+'/'+time_dd+'-다운로드1.xls'
+        path = './public/excel/'+time_dd+'/'+time_dd+'-'+params['where77']+'.xls'
         book.write path
         file_name = Array.new
         file_name << path
 
-        dir_name2 = dir_name+'다운로드1.zip'
+        dir_name2 = dir_name+params['where77']+'.zip'
         begin
             File.open(dir_name2, 'r') do |f|
                 File.delete(f)
@@ -724,6 +724,25 @@ class HomeController < ApplicationController
 		end
 
 		render :json => {'result' => 'ok' , 'answer' => dir_name2.split('./public')[1]}
+    end
+
+    def songjang_upload777
+        client = ActiveRecord::Base.connection
+        datas = params['data']
+        datas2 = params['data2']
+        datas.each do |key,v|
+            vv = v.values.map do |kk|
+                '"'+kk.split('"').join('')+'"'
+            end
+            client.execute('insert into PRODUCT('+v.keys.join(',')+') values('+vv.join(',')+')')
+        end
+        datas2.each do |key,v|
+            vv = v.values.map do |kk|
+                '"'+kk.split('"').join('')+'"'
+            end
+            client.execute('insert into CTOPOPTION2('+v.keys.join(',')+') values('+vv.join(',')+')')
+        end
+        render :json => {'result' => 'ok'}
     end
 
     def excel2
@@ -784,7 +803,7 @@ class HomeController < ApplicationController
         @excel6 = Array.new
         @excel5.each do |i|
             memory = Array.new
-            result2 = client.execute('select * from excel6 where _id + '+i[0].to_s)
+            result2 = client.execute('select * from excel6 where excel5id = '+i[0].to_s)
             result2.each do |j|
                 memory << j
             end
@@ -797,7 +816,7 @@ class HomeController < ApplicationController
         datas = params['data']
         client.execute("delete from excel6")
         datas.each do |key, i|
-            client.execute("insert into excel6(dataname, headname, soon, excel5id) values('#{i[0]}', '#{i[1]}', #{i[2]}, 1)")
+            client.execute("insert into excel6(dataname, headname, soon, excel5id) values('#{i[0]}', '#{i[1]}', #{i[2]}, #{i[3]})")
         end
 
         render :json => {'result' => 'ok'}

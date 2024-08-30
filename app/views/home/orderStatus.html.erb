@@ -40,6 +40,12 @@
                 <option value="B2B해외">B2B해외</option>
                 <option value="B2B국내">B2B국내</option>
                 <option value="다운로드1">다운로드1</option>
+                <option value="다운로드2">다운로드2</option>
+                <option value="다운로드3">다운로드3</option>
+                <option value="다운로드4">다운로드4</option>
+                <option value="다운로드5">다운로드5</option>
+                <option value="다운로드6">다운로드6</option>
+                <option value="다운로드7">다운로드7</option>
             </select>
 
             <select class="form-control col m-2" id="where_select">
@@ -289,13 +295,14 @@
             const totalRowCnt = table33.rows.length;
             var selectedRows = [];
             
-            if($("#where_select3").val() == "다운로드1"){
+            if($("#where_select3").val() == "다운로드1" || $("#where_select3").val() == "다운로드2" || $("#where_select3").val() == "다운로드3" || $("#where_select3").val() == "다운로드4" || $("#where_select3").val() == "다운로드5" || $("#where_select3").val() == "다운로드6" || $("#where_select3").val() == "다운로드7"){
                 $.ajax({
                     url: '/download_action_all77',
                     method: 'POST',
                     data: {
                         'sdate' : $("#litepickerRangePlugin").val(),
-                        'edate' : $("#litepickerRangePlugin2").val()
+                        'edate' : $("#litepickerRangePlugin2").val(),
+                        'where77' : $("#where_select3").val()
                     },
                     success: function (res){
                         window.open(res['answer'], '_blank');

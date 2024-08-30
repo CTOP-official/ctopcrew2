@@ -5,7 +5,7 @@
 
     <div class="card-body">
         <button type="button" class="btn btn-primary mb-3" id="button1">저장</button>
-        <div class="row">
+        <div class="row mb-3">
             <div class="col-4">
                 <select class="form-select" size="20" id="select1">
                     <% @header.each do |name| %>
@@ -48,6 +48,272 @@
                 </table>
             </div>
         </div>
+
+        <div class="row mb-3">
+            <div class="col-4">
+                <select class="form-select" size="20" id="select1-2">
+                    <% @header.each do |name| %>
+                        <% if @excel6[1].include?(name) %>
+
+                        <% else %>
+                            <option><%= name %></option>
+                        <% end %>
+                    <% end %>
+                </select>
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-green mb-3 mt-5" id="add_button2-2">공백<br>추가</button>
+                <button type="button" class="btn btn-primary mb-3" id="add_button1-2">추가</button>
+                <button type="button" class="btn btn-danger" id="delete_button1-2">제거</button>
+            </div>
+            <div class="col-7">
+                <table class="" width="100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>가저올데이터</th>
+                            <th>엑셀해더이름</th>
+                            <th>button</th>
+                            <th>button</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tbody1-2">
+                        <% @excel6[1].each do |i| %>
+                            <tr>
+                                <th><input type="checkbox" class="form-check-input"></th>
+                                <td><%= i[1] %></td>
+                                <td><input type="text" class="form-control" value="<%= i[2] %>"></td>
+                                <td><button type="button" class="btn btn-primary soonje_up_button-2">올리기</td>
+                                <td><button type="button" class="btn btn-danger soonje_down_button-2">내리기</button></td>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-4">
+                <select class="form-select" size="20" id="select1-3">
+                    <% @header.each do |name| %>
+                        <% if @excel6[2].include?(name) %>
+
+                        <% else %>
+                            <option><%= name %></option>
+                        <% end %>
+                    <% end %>
+                </select>
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-green mb-3 mt-5" id="add_button2-3">공백<br>추가</button>
+                <button type="button" class="btn btn-primary mb-3" id="add_button1-3">추가</button>
+                <button type="button" class="btn btn-danger" id="delete_button1-3">제거</button>
+            </div>
+            <div class="col-7">
+                <table class="" width="100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>가저올데이터</th>
+                            <th>엑셀해더이름</th>
+                            <th>button</th>
+                            <th>button</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tbody1-3">
+                        <% @excel6[2].each do |i| %>
+                            <tr>
+                                <th><input type="checkbox" class="form-check-input"></th>
+                                <td><%= i[1] %></td>
+                                <td><input type="text" class="form-control" value="<%= i[2] %>"></td>
+                                <td><button type="button" class="btn btn-primary soonje_up_button-3">올리기</td>
+                                <td><button type="button" class="btn btn-danger soonje_down_button-3">내리기</button></td>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-4">
+                <select class="form-select" size="20" id="select1-4">
+                    <% @header.each do |name| %>
+                        <% if @excel6[3].include?(name) %>
+
+                        <% else %>
+                            <option><%= name %></option>
+                        <% end %>
+                    <% end %>
+                </select>
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-green mb-3 mt-5" id="add_button2-4">공백<br>추가</button>
+                <button type="button" class="btn btn-primary mb-3" id="add_button1-4">추가</button>
+                <button type="button" class="btn btn-danger" id="delete_button1-4">제거</button>
+            </div>
+            <div class="col-7">
+                <table class="" width="100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>가저올데이터</th>
+                            <th>엑셀해더이름</th>
+                            <th>button</th>
+                            <th>button</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tbody1-4">
+                        <% @excel6[3].each do |i| %>
+                            <tr>
+                                <th><input type="checkbox" class="form-check-input"></th>
+                                <td><%= i[1] %></td>
+                                <td><input type="text" class="form-control" value="<%= i[2] %>"></td>
+                                <td><button type="button" class="btn btn-primary soonje_up_button-4">올리기</td>
+                                <td><button type="button" class="btn btn-danger soonje_down_button-4">내리기</button></td>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-4">
+                <select class="form-select" size="20" id="select1-5">
+                    <% @header.each do |name| %>
+                        <% if @excel6[4].include?(name) %>
+
+                        <% else %>
+                            <option><%= name %></option>
+                        <% end %>
+                    <% end %>
+                </select>
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-green mb-3 mt-5" id="add_button2-5">공백<br>추가</button>
+                <button type="button" class="btn btn-primary mb-3" id="add_button1-5">추가</button>
+                <button type="button" class="btn btn-danger" id="delete_button1-5">제거</button>
+            </div>
+            <div class="col-7">
+                <table class="" width="100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>가저올데이터</th>
+                            <th>엑셀해더이름</th>
+                            <th>button</th>
+                            <th>button</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tbody1-5">
+                        <% @excel6[4].each do |i| %>
+                            <tr>
+                                <th><input type="checkbox" class="form-check-input"></th>
+                                <td><%= i[1] %></td>
+                                <td><input type="text" class="form-control" value="<%= i[2] %>"></td>
+                                <td><button type="button" class="btn btn-primary soonje_up_button-5">올리기</td>
+                                <td><button type="button" class="btn btn-danger soonje_down_button-5">내리기</button></td>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-4">
+                <select class="form-select" size="20" id="select1-6">
+                    <% @header.each do |name| %>
+                        <% if @excel6[5].include?(name) %>
+
+                        <% else %>
+                            <option><%= name %></option>
+                        <% end %>
+                    <% end %>
+                </select>
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-green mb-3 mt-5" id="add_button2-6">공백<br>추가</button>
+                <button type="button" class="btn btn-primary mb-3" id="add_button1-6">추가</button>
+                <button type="button" class="btn btn-danger" id="delete_button1-6">제거</button>
+            </div>
+            <div class="col-7">
+                <table class="" width="100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>가저올데이터</th>
+                            <th>엑셀해더이름</th>
+                            <th>button</th>
+                            <th>button</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tbody1-6">
+                        <% @excel6[5].each do |i| %>
+                            <tr>
+                                <th><input type="checkbox" class="form-check-input"></th>
+                                <td><%= i[1] %></td>
+                                <td><input type="text" class="form-control" value="<%= i[2] %>"></td>
+                                <td><button type="button" class="btn btn-primary soonje_up_button-6">올리기</td>
+                                <td><button type="button" class="btn btn-danger soonje_down_button-6">내리기</button></td>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-4">
+                <select class="form-select" size="20" id="select1-7">
+                    <% @header.each do |name| %>
+                        <% if @excel6[6].include?(name) %>
+
+                        <% else %>
+                            <option><%= name %></option>
+                        <% end %>
+                    <% end %>
+                </select>
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-green mb-3 mt-5" id="add_button2-7">공백<br>추가</button>
+                <button type="button" class="btn btn-primary mb-3" id="add_button1-7">추가</button>
+                <button type="button" class="btn btn-danger" id="delete_button1-7">제거</button>
+            </div>
+            <div class="col-7">
+                <table class="" width="100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>가저올데이터</th>
+                            <th>엑셀해더이름</th>
+                            <th>button</th>
+                            <th>button</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tbody1-7">
+                        <% @excel6[6].each do |i| %>
+                            <tr>
+                                <th><input type="checkbox" class="form-check-input"></th>
+                                <td><%= i[1] %></td>
+                                <td><input type="text" class="form-control" value="<%= i[2] %>"></td>
+                                <td><button type="button" class="btn btn-primary soonje_up_button-7">올리기</td>
+                                <td><button type="button" class="btn btn-danger soonje_down_button-7">내리기</button></td>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
     </div>
 </div>
 
@@ -58,8 +324,15 @@
             trs = $("#tbody1").children();
             trs.each(function(i){
                 tds = trs.eq(i).children();
-                data2.push([tds.eq(1).text(), tds.eq(2).children().eq(0).val(), i])
+                data2.push([tds.eq(1).text(), tds.eq(2).children().eq(0).val(), i, 1])
             });
+            <% for n in 2..7 %>
+                trs = $("#tbody1-<%= n %>").children();
+                trs.each(function(i){
+                    tds = trs.eq(i).children();
+                    data2.push([tds.eq(1).text(), tds.eq(2).children().eq(0).val(), i, <%= n %>])
+                });
+            <% end %>
             console.log(data2)
             $.ajax({
                 url: '/excel_save777',
@@ -102,5 +375,39 @@
                 };
             });
         });
+
+        <% for n in 2..7 %>
+            $("body").on('click', '.soonje_up_button-<%= n %>', function(){
+                row = $(this).closest('tr');
+                row.prev().before(row);
+            });
+
+            $("body").on('click', '.soonje_down_button-<%= n %>', function(){
+                row = $(this).closest('tr');
+                row.next().after(row);
+            });
+
+            $("#add_button1-<%= n %>").click(function(){
+                var newRow = '<tr><th><input type="checkbox" class="form-check-input"></th><td>'+$("#select1-<%= n %> option:selected").text()+'</td><td><input type="text" class="form-control"></td><td><button type="button" class="btn btn-primary soonje_up_button">올리기</td><td><button type="button" class="btn btn-danger soonje_down_button-<%= n %>">내리기</button></td></tr>';
+                $("#tbody1-<%= n %>").append(newRow);
+                $("#select1-<%= n %> option:selected").remove();
+            });
+
+            $("#add_button2-<%= n %>").click(function(){
+                var newRow = '<tr><th><input type="checkbox" class="form-check-input"></th><td></td><td><input type="text" class="form-control"></td><td><button type="button" class="btn btn-primary soonje_up_button">올리기</td><td><button type="button" class="btn btn-danger soonje_down_button-<%= n %>">내리기</button></td></tr>';
+                $("#tbody1-<%= n %>").append(newRow);
+            });
+
+            $("#delete_button1-<%= n %>").click(function(){
+                trs = $("#tbody1-<%= n %>").children();
+                trs.each(function(i){
+                    tds = trs.eq(i).children();
+                    if(tds.eq(0).children().eq(0).is(':checked')){
+                        trs.eq(i).remove();
+                        $("#select1-<%= n %>").append("<option>"+trs.eq(i).children().eq(1).text()+"</option>");
+                    };
+                });
+            });
+        <% end %>
     });
 </script>

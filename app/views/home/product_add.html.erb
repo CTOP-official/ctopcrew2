@@ -1,6 +1,8 @@
 <div class="card mb-4">
     <div class="card-header">
         <button class="btn btn-success" type="button" id="save_button">저장</button>
+        <input type="file" id="fileInput" style="display:none;">
+        <button type="button" class="btn btn-secondary col m-2" onclick="document.getElementById('fileInput').click()"  id="download_btn4">엑셀저장</button>
     </div>
     <div class="card-body">
         <div style="width:100%; overflow:auto;" id="table-container" class="m-2">
@@ -121,4 +123,43 @@
             }
         })
     });
+
+    document.getElementById('fileInput').addEventListener('change', function (event) {
+        var selectedFile = event.target.files[0];
+        if (selectedFile){
+            readExcel(selectedFile);
+        }
+    });
+
+    function readExcel(file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, { type: 'array' });
+            var sheet = workbook.Sheets[workbook.SheetNames[0]];
+            var sheet2 = workbook.Sheets[workbook.SheetNames[1]];
+            // 헤더 추가
+            // var headers = Object.keys(sheet).filter(key => /^[A-Z]+1$/.test(key)).map(key => sheet[key].v);
+            // addHeaders(headers);
+
+            // 데이터 행 추가
+            var rows = XLSX.utils.sheet_to_json(sheet, { header: 0, raw: false, defval: '' });
+            var rows2 = XLSX.utils.sheet_to_json(sheet2, { header: 0, raw: false, defval: '' });
+            addRows(rows, rows2);
+        };
+
+        reader.readAsArrayBuffer(file);
+    };
+
+    function addRows(rows, rows2) {
+        $.ajax({
+            url: '/songjang_upload777',
+            method: 'POST',
+            data: {'data' : rows,
+                    'data2' : rows2},
+            success: function (res){
+                location.reload();
+            }
+        });
+    };
 </script>
