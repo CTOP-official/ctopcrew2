@@ -48,6 +48,15 @@ class HomeController < ApplicationController
         reset_session
         redirect_to '/login', notice: '로그아웃되었습니다.'
     end
+    
+    def optionDelete
+        client = ActiveRecord::Base.connection
+        for idv in params['ids']    
+        	client.execute('delete from CTOPOPTION2 where _id = '+ idv.to_s)
+        end
+        
+        render :json => {'result' => 'ok'}
+    end 
 
     
 

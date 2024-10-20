@@ -20,13 +20,23 @@
                 <div class="col-2">
                     <button type="submit" class="btn btn-primary">검색</button>
                 </div>
+                
+                <div class="col-3">
+                    
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-danger" id="delete_button">
+                        삭제
+                    </button>
+                </div>
             </div>
         </form>
 
         <div style="width:100%; height:600px; overflow:auto;" id="table-container" class="m-2">
-            <table id="datatablesSimple" width="2000px;" style="overflow-y:scroll;">
+            <table id="datatablesSimple" width="1500px;" style="overflow-y:scroll;">
                 <thead>
                     <tr>
+                        <th><input type="checkbox" id="checkAll"></th>
                         <th>id</th>
                         <th>상품아이디</th>
                         <th>바코드</th>
@@ -35,22 +45,21 @@
                         <th>가격</th>
                         <th>배송가격</th>
                         <th>수량</th>
-                        <th>수정</th>
                     </tr>
                 </thead>
 
-                <tbody contenteditable="true">
+                <tbody id="tbody_ele">
                     <% @data.each_with_index do |i,index| %>
                         <tr>
+                            <td><input type="checkbox" class="rowCheckbox"></td>
                             <td><%= i[0] %></td>
-                            <td><%= i[1] %></td>
-                            <td><%= i[2] %></td>
-                            <td><%= i[4] %></td>
-                            <td><%= i[5] %></td>
-                            <td><%= i[8] %></td>
-                            <td><%= i[9] %></td>
-                            <td><%= i[11] %></td>
-                            <td contenteditable="false"><button type='button' class='btn btn-primary edit_button'>수정</button></td>
+                            <td contenteditable="true"><%= i[1] %></td>
+                            <td contenteditable="true"><%= i[2] %></td>
+                            <td contenteditable="true"><%= i[4] %></td>
+                            <td contenteditable="true"><%= i[5] %></td>
+                            <td contenteditable="true"><%= i[8] %></td>
+                            <td contenteditable="true"><%= i[9] %></td>
+                            <td contenteditable="true"><%= i[11] %></td>
                         </tr>
                     <% end %>
                 </tbody>
@@ -60,6 +69,40 @@
 </div>
 
 <script>
+     $('#checkAll').on('change', function() {
+        $('.rowCheckbox').prop('checked', this.checked);
+    });
+    
+    $("#delete_button").click(function(){
+        let userResponse = confirm('계속 진행하시겠습니까?');
+        
+        if (userResponse) {
+            var memory = [];
+            var trs = $("#tbody_ele").children();
+            trs.each(function(index, ele){
+                if($(ele).children().eq(0).children().eq(0).prop("checked")){
+                 	memory.push($(ele).children().eq(1).text());
+                }
+            })
+            
+            console.log(memory);
+            
+            $.ajax({
+                url: '/optionDelete',
+                type: 'POST',
+                data: {
+                    'ids' : memory
+                },
+                success: function(res){
+                	alert("삭제완료");
+            	}
+            });
+        } 
+        else {
+            
+        }
+    });
+    
     $(".edit_button").click(function(){
         var tds = $(this).parent("td").parent("tr").find("*");
         var id = tds[0].textContent
