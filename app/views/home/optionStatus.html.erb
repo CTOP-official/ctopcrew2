@@ -21,16 +21,51 @@
                     <button type="submit" class="btn btn-primary">검색</button>
                 </div>
                 
-                <div class="col-3">
-                    
+                <div class="col-2">
+                    <button type="button" class="btn btn-primary" id="btn_zero">
+                        품절적용
+                    </button>
                 </div>
                 <div class="col-2">
-                    <button type="button" class="btn btn-danger" id="delete_button">
-                        삭제
+                    <button type="button" class="btn btn-primary" id="btn10">
+                        품절해제
                     </button>
                 </div>
             </div>
         </form>
+        
+        <div class="row mt-3">
+            <div class="col-2 ms-2">
+                <select class="form-select" id="where10">
+                    <option value="1">옵션1</option>
+                    <option value="2">옵션2</option>
+                    <option value="3">바코드</option>
+                    <option value="4">상품아이디</option>
+                </select>
+            </div>
+
+            <div class="col-2">
+                <input type="text" class="form-control" id="input10">
+            </div>
+
+            <div class="col-2">
+                <button type="button" class="btn btn-primary" id="edit10">수정</button>
+            </div>
+            
+            <button type="button" class="btn btn-green col-1 ms-2" id="btn_save">
+                저장
+            </button>
+            
+            <div class="col-2">
+                
+            </div>
+            
+            <div class="col-2">
+                <button type="button" class="btn btn-danger" id="delete_button">
+                    삭제
+                </button>
+            </div>
+        </div>
 
         <div style="width:100%; height:600px; overflow:auto;" id="table-container" class="m-2">
             <table id="datatablesSimple" width="1500px;" style="overflow-y:scroll;">
@@ -40,6 +75,7 @@
                         <th>id</th>
                         <th>상품아이디</th>
                         <th>바코드</th>
+                        <th>옵션코드</th>
                         <th>옵션1</th>
                         <th>옵션2</th>
                         <th>가격</th>
@@ -55,6 +91,7 @@
                             <td><%= i[0] %></td>
                             <td contenteditable="true"><%= i[1] %></td>
                             <td contenteditable="true"><%= i[2] %></td>
+                            <td contenteditable="true"><%= i[7] %></td>
                             <td contenteditable="true"><%= i[4] %></td>
                             <td contenteditable="true"><%= i[5] %></td>
                             <td contenteditable="true"><%= i[8] %></td>
@@ -72,6 +109,77 @@
      $('#checkAll').on('change', function() {
         $('.rowCheckbox').prop('checked', this.checked);
     });
+    
+    $("#btn_save").click(function(){
+        var trs = $("#tbody_ele").children();
+        var memory = [];
+        trs.each(function(index, ele){
+           if($(ele).children().eq(0).children().eq(0).prop("checked")){
+               var mm2 = [];
+               for(var i = 1; i < 10 ; i++){
+               		mm2.push($(ele).children().eq(i).text());
+               }
+               memory.push(mm2);
+           }
+        });
+        
+        console.log(memory);
+        
+        $.ajax({
+            url: '/optionEdit10',
+            type: 'POST',
+            data: {
+                'datas' : memory
+            },
+            success: function(res){
+                alert("수정완료");
+            }
+        })
+    })
+    
+    $("#edit10").click(function(){
+        var trs = $("#tbody_ele").children();
+        trs.each(function(index, ele){
+           if($(ele).children().eq(0).children().eq(0).prop("checked")){
+               if($("#where10").val() == '1'){
+        			$(ele).children().eq(5).html($("#input10").val());
+               }else if($("#where10").val() == '2'){
+                   $(ele).children().eq(6).html($("#input10").val());
+               }else if($("#where10").val() == '3'){
+                   $(ele).children().eq(3).html($("#input10").val());
+               }else if($("#where10").val() == '4'){
+                   $(ele).children().eq(2).html($("#input10").val());
+               }
+           }
+        });
+    })
+    
+    $("#btn_zero").click(function(){
+        var trs = $("#tbody_ele").children();
+        trs.each(function(index, ele){
+           if($(ele).children().eq(0).children().eq(0).prop("checked")){
+               $(ele).children().eq(9).html("0");
+           }
+        });
+    })
+    
+    $("#btn10").click(function(){
+        var trs = $("#tbody_ele").children();
+        trs.each(function(index, ele){
+           if($(ele).children().eq(0).children().eq(0).prop("checked")){
+               $(ele).children().eq(9).html("100");
+           }
+        });
+    })
+    
+    $("#btn_save").click(function(){
+        var trs = $("#tbody_ele").children();
+        trs.each(function(index, ele){
+            if($(ele).children().eq(0).children().eq(0).prop("checked")){
+               
+           }
+        });
+    })
     
     $("#delete_button").click(function(){
         let userResponse = confirm('계속 진행하시겠습니까?');

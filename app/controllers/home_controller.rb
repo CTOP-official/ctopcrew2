@@ -2247,6 +2247,26 @@ class HomeController < ApplicationController
         end
         render :json => {'result' => answer}
     end
+    
+    def optionEdit10
+    	datas = params['datas']
+        
+        client = ActiveRecord::Base.connection
+        
+        datas.each do |data|
+            id = data[0].to_s
+            proid = data[1].to_s
+            barcode = data[2].to_s
+            optCode = data[3].to_s
+            option1 = data[4].to_s
+            option2 = data[5].to_s
+            price1 = data[6].to_s
+            price2 = data[7].to_s
+            curCon = data[8].to_s
+           	query = "update CTOPOPTION2 set proId = '#{proid}', barcode = '#{barcode}', optName1 = '#{option1}', optName2 = '#{option2}', price = '#{price1}', priceDel = '#{price2}', curCon = '#{curCon}', optCode = '#{optCode}' where _id = #{id}"
+            client.execute(query) 
+        end
+    end
 
     def optionEditAction
         id = params["id"].to_s
