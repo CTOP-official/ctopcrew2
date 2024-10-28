@@ -2254,6 +2254,7 @@ class HomeController < ApplicationController
         client = ActiveRecord::Base.connection
         
         datas.each do |data|
+            data = data[1]
             id = data[0].to_s
             proid = data[1].to_s
             barcode = data[2].to_s
