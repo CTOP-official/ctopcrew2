@@ -1135,6 +1135,51 @@ class HomeController < ApplicationController
 
         render :json => {'result' => 'ok' , 'answer' => dir_name2.split('./public')[1]}
     end
+    
+    def option_download2
+        dir_name2 = './public/excel/'+Time.now.to_i.to_s+'.xls'
+        client = ActiveRecord::Base.connection
+        book = Spreadsheet::Workbook.new
+        sheet1 = book.create_worksheet
+        
+        head = ['id', '공급방식', '공급사', '출고국가', '출고국가영문', '판매업체', '품목', '바코드', '브랜드 영문명', '영문 상품명', '브랜드', '업체별 상품코드', '상품명', '옵션1', '옵션2', '수량', '고도몰상품코드', '옵션코드']
+    	head.each do |i|
+           	sheet1.row(0).push(i) 
+        end
+        
+        index = 1
+        
+        result = client.execute('select * from PRODUCT')
+        result.each do |db_data|
+           	procode = db_data[10].to_s
+            result2 = client.execute('select * from CTOPOPTION2 where proId = "'+procode+'"')
+            result2.each do |op_data|
+                sheet1.row(index).push(db_data[0])
+                sheet1.row(index).push(db_data[1])
+                sheet1.row(index).push(db_data[2])
+                sheet1.row(index).push(db_data[3])
+                sheet1.row(index).push(db_data[4])
+                sheet1.row(index).push(db_data[5])
+                sheet1.row(index).push(db_data[6])
+                sheet1.row(index).push(op_data[2])
+                sheet1.row(index).push(db_data[7])
+                sheet1.row(index).push(db_data[8])
+                sheet1.row(index).push(db_data[9])
+                sheet1.row(index).push(db_data[10])
+                sheet1.row(index).push(db_data[11])
+                sheet1.row(index).push(op_data[4])
+                sheet1.row(index).push(op_data[5])
+                sheet1.row(index).push(op_data[6])
+                sheet1.row(index).push(db_data[14])
+                sheet1.row(index).push(op_data[7])
+            	index += 1
+            end
+        end
+        
+        book.write dir_name2
+
+        render :json => {'result' => 'ok' , 'answer' => dir_name2.split('./public')[1]}
+    end
 
     def total_download2
         dir_name2 = './public/excel/'+Time.now.to_i.to_s+'.xls'
@@ -2258,14 +2303,17 @@ class HomeController < ApplicationController
             id = data[0].to_s
             proid = data[1].to_s
             barcode = data[2].to_s
-            optCode = data[3].to_s
-            option1 = data[4].to_s
-            option2 = data[5].to_s
-            price1 = data[6].to_s
-            price2 = data[7].to_s
-            curCon = data[8].to_s
+            godocode = data[3].to_s
+            optCode = data[4].to_s
+            option1 = data[5].to_s
+            option2 = data[6].to_s
+            price1 = data[7].to_s
+            price2 = data[8].to_s
+            curCon = data[9].to_s
            	query = "update CTOPOPTION2 set proId = '#{proid}', barcode = '#{barcode}', optName1 = '#{option1}', optName2 = '#{option2}', price = '#{price1}', priceDel = '#{price2}', curCon = '#{curCon}', optCode = '#{optCode}' where _id = #{id}"
             client.execute(query) 
+            query2 = "update PRODUCT set godocode = '#{godocode}' where procode = '#{proid}' "
+            client.execute(query2) 
         end
     end
 
@@ -2273,6 +2321,7 @@ class HomeController < ApplicationController
         id = params["id"].to_s
         proid = params["proId"].to_s
         barcode = params['barcode'].to_s
+        godocode = params['godocode'].to_s
         option1 = params['option1'].to_s
         option2 = params['option2'].to_s
         price1 = params['price1'].to_s
@@ -2284,6 +2333,8 @@ class HomeController < ApplicationController
         else
             query = "update CTOPOPTION2 set proId = '#{proid}', barcode = '#{barcode}', optName1 = '#{option1}', optName2 = '#{option2}', price = '#{price1}', priceDel = '#{price2}', curCon = '#{curCon}' where _id = #{id}"
             client.execute(query)
+            query2 = "update PRODUCT set godocode = '#{godocode.to_s}' where procode = '#{proid}'"
+            client.execute(query2)
         end
 
         render :json => {'result' => "ok"}
@@ -2311,7 +2362,13 @@ class HomeController < ApplicationController
 
         result = client.execute("select * from CTOPOPTION2 where #{search_type} like \"#{search_value}%\" limit #{page1}, #{pagesize}")
         result.each do |i|
-            @data << i
+            i3 = i
+            result2 = client.execute("select godocode from PRODUCT where procode = '#{i[1].to_s}'")
+            result2.each do |i2|
+               	i3 << i2[0]
+                break
+            end
+            @data << i3
         end
     end
 

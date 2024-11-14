@@ -45,6 +45,7 @@ Rails.application.routes.draw do
   post '/songjang_upload777' => 'home#songjang_upload777'
   post '/optionDelete' => 'home#optionDelete'
   post '/optionEdit10' => 'home#optionEdit10'
+  post '/option_download2' => 'home#option_download2'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
